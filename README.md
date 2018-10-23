@@ -9,7 +9,7 @@
 1. docker-compose up -d, then wait dns check ready and ChurchCRM install.
 1. https://www.example.com, default user is admin, password is changeme.
 
-##debug
+## Debug
 1. Modify docker-compose.yml, enabled debug setting.
 1. Remove setting\nginx\vhost.d\default first line '#'
 1. docker-compose down;docker-compose up -d
