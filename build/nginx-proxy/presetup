@@ -1,0 +1,6 @@
+#!/bin/ash
+if [ -f /app/prechk ]; then
+    cp /app/prechk /app/run.sh
+    chmod +x /app/run.sh
+fi
+exec "$@"

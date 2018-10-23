@@ -11,7 +11,7 @@ CERTS="/etc/nginx/certs"
 
 
 updatessl() {
-  nginx -t && nginx -s reload
+  nginx-debug -t && nginx-debug -s reload
 
   if ! [ -s "$CERTS/$(jq -r '.host' /var/run/secrets/ssl).crt" ]; then
         if [ $(jq -r '.letsencrypt.mode' /var/run/secrets/ssl) = "dns" ]; then
@@ -20,12 +20,12 @@ updatessl() {
             eval $ACME_BIN --issue --dns $(jq -r '.Provider' /var/run/secrets/dns_api) $(jq -r '.letsencrypt.domain_parameter' /var/run/secrets/ssl) $(jq -r '.letsencrypt.extra_parameter' /var/run/secrets/ssl) \
             --fullchain-file "$CERTS/$(jq -r '.host' /var/run/secrets/ssl).crt" \
             --key-file "$CERTS/$(jq -r '.host' /var/run/secrets/ssl).key" \
-            --reloadcmd "\"nginx -t && nginx -s reload\"";
+            --reloadcmd "\"nginx-debug -t && nginx-debug -s reload\"";
         else
             eval $ACME_BIN --issue $(jq -r '.letsencrypt.domain_parameter' /var/run/secrets/ssl) --nginx $(jq -r '.letsencrypt.extra_parameter' /var/run/secrets/ssl) \
             --fullchain-file "$CERTS/$(jq -r '.host' /var/run/secrets/ssl).crt" \
             --key-file "$CERTS/$(jq -r '.host' /var/run/secrets/ssl).key" \
-            --reloadcmd "\"nginx -t && nginx -s reload\"";
+            --reloadcmd "\"nginx-debug -t && nginx-debug -s reload\"";
         fi
 
     #generate nginx conf again.
@@ -33,7 +33,7 @@ updatessl() {
   else
     echo "skip updatessl"
   fi
-  nginx -t && nginx -s reload
+  nginx-debug -t && nginx-debug -s reload
 }
 
 "$@"

@@ -1,8 +1,8 @@
 version: '3.5'
 services:
   web:
-    image: neilpang/nginx-proxy:alpine
     container_name: web
+    build: ./build/nginx-proxy
     environment:
 #      - DEFAULT_HOST=www.example.com
       - VIRTUAL_PROTO=https
@@ -16,7 +16,7 @@ services:
       - dhparam-volume:/etc/nginx/dhparam/
       - ./setting/nginx/vhost.d/:/etc/nginx/vhost.d:ro
       - ./setting/nginx/proxy.conf:/etc/nginx/proxy.conf:ro
-      - ./setting/nginx/updatessl.sh:/app/updatessl.sh
+      - ./setting/nginx/updatessl.sh:/app/prechk
       - ./secrets/acme:/acmecerts #acme.sh install folder
       - ./secrets/certs:/etc/nginx/certs #certs folder
 #      - ./setting/nginx/Procfile-debug:/app/Procfile:ro  #debug nginx mode. need enable error_log /var/debug/error.log debug;
