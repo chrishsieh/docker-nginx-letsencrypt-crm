@@ -6,6 +6,7 @@
 1. Update docker-compose.yml
 
 ## Install
+1. docker-compose build
 1. docker-compose up -d, then wait dns check ready and ChurchCRM install.
 1. https://www.example.com, default user is admin, password is changeme.
 
