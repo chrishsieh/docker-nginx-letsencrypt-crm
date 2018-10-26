@@ -4,5 +4,7 @@ RUN apk add --update jq
 
 COPY ./docker-entrypoint.sh /app
 RUN chmod +x /app/docker-entrypoint.sh
+EXPOSE 443
 
-EXPOSE 3306
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+CMD ["forego", "start", "-r"]
