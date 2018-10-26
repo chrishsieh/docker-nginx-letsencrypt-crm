@@ -1,3 +1,0 @@
-dockergen: docker-gen -watch -notify "/app/presetup|/app/run.sh updatessl" /app/nginx.tmpl /etc/nginx/conf.d/default.conf
-nginx: nginx
-cron: cron -f || crond -f
