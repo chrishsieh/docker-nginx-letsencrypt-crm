@@ -61,10 +61,10 @@ services:
 #  new_php_site:
 #    image: php:fpm-alpine
 #    environment:
-#      VIRTUAL_HOST:example.com
-#      VIRTUAL_PROTO:fastcgi
-#      VIRTUAL_ROOT:/var/www/html
-#      VIRTUAL_PORT:9000
+#      - VIRTUAL_HOST=www.example.com
+#      - VIRTUAL_PROTO=fastcgi
+#      - VIRTUAL_ROOT=/var/www/html
+#      - VIRTUAL_PORT=9000
 #      - ENABLE_ACME=true
 #    volumes:
 #      - ./html:/var/www/html
