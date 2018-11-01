@@ -19,7 +19,6 @@ services:
       - ./keys/certs:/etc/nginx/certs #certs folder
     restart: always
     secrets:
-      - dns_api
       - ssl
 
   php:
