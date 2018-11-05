@@ -4,10 +4,7 @@ services:
     container_name: web
     build: ./build/nginx-proxy
     environment:
-#      - DEFAULT_HOST=www.example.com
-      - VIRTUAL_PROTO=https
-      - VIRTUAL_PORT=443
-      - ENABLE_HSTS=true
+      - DEFAULT_HOST=localhost
     ports:
       - "80:80"
       - "443:443"
@@ -17,6 +14,7 @@ services:
       - ./setting/nginx/vhost.d/:/etc/nginx/vhost.d:ro
       - ./setting/nginx/proxy.conf:/etc/nginx/proxy.conf:ro
       - ./setting/nginx/updatessl.sh:/app/prechk
+      - ./setting/nginx/dns_dynu.sh:/acme.sh/dnsapi/dns_dynu.sh # fix dynu.sh issue
       - ./secrets/acme:/acmecerts #acme.sh install folder
       - ./secrets/certs:/etc/nginx/certs #certs folder
 #      - ./setting/nginx/Procfile-debug:/app/Procfile:ro  #debug nginx mode. need enable error_log /var/debug/error.log debug;
@@ -50,13 +48,51 @@ services:
       - VIRTUAL_ROOT=/var/www/html
       - VIRTUAL_PORT=9000
       - ENABLE_ACME=true
+      - ENABLE_HSTS=true
     volumes:
-      - ./content/www:/var/www
+#      - ./content/www:/var/www # php file debug
+      - content:/var/www
       - ./setting/php/default.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/php/crmsetup:/usr/local/prechk
 #      - ./log/php:/usr/local/var/log  #debug use.
     secrets:
       - crm_secrets
+
+  php1:
+    container_name: php1
+    image: php:fpm-alpine
+    environment:
+      - VIRTUAL_HOST=www.example1.com
+      - VIRTUAL_PROTO=fastcgi
+      - VIRTUAL_ROOT=/var/www/html
+      - VIRTUAL_PORT=9000
+      - ENABLE_ACME=true
+    volumes:
+      - ./html:/var/www/html
+
+  php2:
+    container_name: php2
+    image: php:fpm-alpine
+    environment:
+      - VIRTUAL_HOST=localhost
+      - VIRTUAL_PROTO=fastcgi
+      - VIRTUAL_ROOT=/var/www/html
+      - VIRTUAL_PORT=9000
+#      - HTTPS_METHOD=nohttps
+    volumes:
+      - ./html:/var/www/html
+
+  php3:
+    container_name: php3
+    image: php:fpm-alpine
+    environment:
+      - VIRTUAL_HOST=www.example2.com
+      - VIRTUAL_PROTO=fastcgi
+      - VIRTUAL_ROOT=/var/www/html
+      - VIRTUAL_PORT=9000
+      - HTTPS_METHOD=nohttps
+    volumes:
+      - ./html:/var/www/html
 
 #  new_php_site:
 #    image: php:fpm-alpine
@@ -80,3 +116,5 @@ secrets:
 volumes:
   db-volume: null
   dhparam-volume: null
+  content: null
+
