@@ -1,0 +1,43 @@
+version: '3.5'
+services:
+  web:
+    container_name: web
+    build: ./build/nginx-proxy
+    environment:
+      - DEFAULT_HOST=localhost
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - dhparam-volume:/etc/nginx/dhparam/
+      - ./setting/nginx/vhost.d/:/etc/nginx/vhost.d:ro
+      - ./setting/nginx/proxy.conf:/etc/nginx/proxy.conf:ro
+      - ./setting/nginx/updatessl.sh:/app/prechk
+      - ./setting/nginx/dns_dynu.sh:/acme.sh/dnsapi/dns_dynu.sh # fix dynu.sh issue
+      - ./keys/acme:/acmecerts #acme.sh install folder
+      - ./keys/certs:/etc/nginx/certs #certs folder
+    restart: always
+    secrets:
+      - dns_api
+      - ssl
+
+  php:
+    container_name: php
+    image: php:fpm-alpine
+    environment:
+      - VIRTUAL_HOST=localhost
+      - VIRTUAL_PROTO=fastcgi
+      - VIRTUAL_ROOT=/var/www/html
+      - VIRTUAL_PORT=9000
+#      - HTTPS_METHOD=nohttps
+    volumes:
+      - ./html:/var/www/html
+
+secrets:
+  ssl:
+    file: ./secrets/ssl-test.json  ##### need modify  #####
+
+volumes:
+  dhparam-volume: null
+

@@ -21,7 +21,7 @@ services:
 #      - ./log/nginx:/var/debug #debug use.
     restart: always
     secrets:
-#      - dns_api
+      - dns_api
       - ssl
 #    network_mode: "host"
 
@@ -42,12 +42,12 @@ services:
       - db
     environment:
       - MYSQL_DB_HOST=db
-      - LC_ALL=en_US            ##### locale  #####
-      - VIRTUAL_HOST=localhost  ##### need modify  #####
+      - LC_ALL=zh_TW  ##### locale  #####
+      - VIRTUAL_HOST=www.example.com  ##### need modify  #####
       - VIRTUAL_PROTO=fastcgi
       - VIRTUAL_ROOT=/var/www/html
       - VIRTUAL_PORT=9000
-#      - ENABLE_ACME=true       ##### letsencrypt setting
+      - ENABLE_ACME=true
       - ENABLE_HSTS=true
     volumes:
 #      - ./content/www:/var/www # php file debug
@@ -58,13 +58,60 @@ services:
     secrets:
       - crm_secrets
 
+  php1:
+    container_name: php1
+    image: php:fpm-alpine
+    environment:
+      - VIRTUAL_HOST=www.example1.com
+      - VIRTUAL_PROTO=fastcgi
+      - VIRTUAL_ROOT=/var/www/html
+      - VIRTUAL_PORT=9000
+      - ENABLE_ACME=true
+    volumes:
+      - ./html:/var/www/html
+
+  php2:
+    container_name: php2
+    image: php:fpm-alpine
+    environment:
+      - VIRTUAL_HOST=localhost
+      - VIRTUAL_PROTO=fastcgi
+      - VIRTUAL_ROOT=/var/www/html
+      - VIRTUAL_PORT=9000
+#      - HTTPS_METHOD=nohttps
+    volumes:
+      - ./html:/var/www/html
+
+  php3:
+    container_name: php3
+    image: php:fpm-alpine
+    environment:
+      - VIRTUAL_HOST=www.example2.com
+      - VIRTUAL_PROTO=fastcgi
+      - VIRTUAL_ROOT=/var/www/html
+      - VIRTUAL_PORT=9000
+      - HTTPS_METHOD=nohttps
+    volumes:
+      - ./html:/var/www/html
+
+#  new_php_site:
+#    image: php:fpm-alpine
+#    environment:
+#      - VIRTUAL_HOST=www.example.com
+#      - VIRTUAL_PROTO=fastcgi
+#      - VIRTUAL_ROOT=/var/www/html
+#      - VIRTUAL_PORT=9000
+#      - ENABLE_ACME=true
+#    volumes:
+#      - ./html:/var/www/html
+
 secrets:
   crm_secrets:
     file: ./secrets/crm_sql_secrets.json
-#  dns_api:
-#    file: ./secrets/dns_api.json  ##### need modify  #####
+  dns_api:
+    file: ./secrets/dns_api.json  ##### need modify  #####
   ssl:
-    file: ./secrets/ssl.json  ##### need modify  #####
+    file: ./secrets/ssl-sample.json  ##### need modify  #####
 
 volumes:
   db-volume: null
