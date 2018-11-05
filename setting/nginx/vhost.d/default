@@ -99,7 +99,12 @@ location ~* \.(woff|woff2)$ {
 	include ./vhost.d/php-fpm_content_cache;
 }
 
-location ~* \.(ttf|min)$ {
+location ~* \.(swf)$ {
+	add_header Content-Type 'application/x-shockwave-flash';
+	fastcgi_hide_header "Content-Type";
 	include ./vhost.d/php-fpm_content_cache;
 }
 
+location ~* \.(ttf|min)$ {
+	include ./vhost.d/php-fpm_content_cache;
+}
