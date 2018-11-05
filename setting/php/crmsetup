@@ -4,7 +4,8 @@ if ! [ -f ./html/index.php ]; then
     wget $crmlatest && \
     unzip -q *.zip && \
     rm -rf *.zip html && \
-    mv churchcrm html
+    mv churchcrm html && \
+    chown -R www-data:www-data html
 fi
 
 if ! [ -f ./html/Include/Config.php ]; then
