@@ -8,7 +8,7 @@
 ## Install
 1. docker-compose build
 1. docker-compose up -d, wait ChurchCRM install.
-1. https://localhost, default user is admin, password is changeme.
+1. https://myapp.localtest.me, *.localtest.me ip is 127.0.0.1, no need to change hosts file, default user is admin, password is changeme.
 
 ## Debug
 1. Modify docker-compose.yml, enabled debug setting.
