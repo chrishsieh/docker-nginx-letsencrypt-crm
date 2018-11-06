@@ -4,7 +4,7 @@ services:
     container_name: web
     build: ./build/nginx-proxy
     environment:
-      - DEFAULT_HOST=localhost
+      - DEFAULT_HOST=myapp.localtest.me
     ports:
       - "80:80"
       - "443:443"
@@ -25,7 +25,7 @@ services:
     container_name: php
     image: php:fpm-alpine
     environment:
-      - VIRTUAL_HOST=localhost
+      - VIRTUAL_HOST=myapp.localtest.me
       - VIRTUAL_PROTO=fastcgi
       - VIRTUAL_ROOT=/var/www/html
       - VIRTUAL_PORT=9000
