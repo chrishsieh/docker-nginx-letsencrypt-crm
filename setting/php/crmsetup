@@ -10,6 +10,7 @@ fi
 
 if ! [ -f ./html/Include/Config.php ]; then
     cp /var/www/html/Include/Config.php.example /var/www/html/Include/Config.php
+    chown www-data:www-data /var/www/html/Include/Config.php
 
     # Import Docker Secrets
     MYSQL_USER=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER')
