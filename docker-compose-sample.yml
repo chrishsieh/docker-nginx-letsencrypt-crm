@@ -46,7 +46,7 @@ services:
       - LC_ALL=zh_TW  ##### locale  #####
       - VIRTUAL_HOST=www.example.com  ##### need modify  #####
       - VIRTUAL_PROTO=fastcgi
-      - VIRTUAL_ROOT=/var/www/html
+      - VIRTUAL_ROOT=/var/www/CRM/src
       - VIRTUAL_PORT=9000
       - ENABLE_ACME=true
       - ENABLE_HSTS=true

@@ -19,7 +19,7 @@ services:
       - ./keys/acme:/acmecerts #acme.sh install folder
       - ./keys/certs:/etc/nginx/certs #certs folder
 #      - ./setting/nginx/Procfile-debug:/app/Procfile:ro  #debug nginx mode. /setting/nginx/vhost.d/default need enable error_log /var/debug/error.log debug;
-#      - ./log/nginx:/var/debug #debug use.
+      - ./log/nginx:/var/debug #debug use.
       - ./setting/nginx/nginx.tmpl:/app/nginx.tmpl:ro
     restart: always
     secrets:
@@ -31,32 +31,32 @@ services:
     container_name: db
     build: ./build/mysql
     volumes:
-      - db-volume:/var/lib/mysql
+      - db-dev-volume:/var/lib/mysql
       - ./setting/sql/sql_setup:/usr/local/prechk
     secrets:
       - crm_secrets
 
-  php:
-    container_name: php
+  php-dev:
+    container_name: php-dev
     build:
-      context: ./build/php-fpm
+      context: ./build/php-fpm-dev
     links:
       - db
     environment:
       - MYSQL_DB_HOST=db
       - LC_ALL=en_US            ##### locale  #####
-      - VIRTUAL_HOST=myapp.localtest.me  ##### need modify  #####
+      - VIRTUAL_HOST=dev.localtest.me  ##### need modify  #####
       - VIRTUAL_PROTO=fastcgi
       - VIRTUAL_ROOT=/var/www/CRM/src
       - VIRTUAL_PORT=9000
 #      - ENABLE_ACME=true       ##### letsencrypt setting
       - ENABLE_HSTS=true
     volumes:
-#      - ./content/www:/var/www # php file debug
-      - content:/var/www
-      - ./setting/php/php-fpm.d:/usr/local/etc/php-fpm.d:ro
-      - ./setting/php/crmsetup:/usr/local/prechk
-#      - ./log/php:/usr/local/var/log  #debug use.
+#      - ./content/www:/var/www # php file debug in windows failed
+      - content-dev:/var/www
+      - ./setting/php-dev/php-fpm.d:/usr/local/etc/php-fpm.d:ro
+      - ./setting/php-dev/crmsetup:/usr/local/prechk
+      - ./log/php-dev:/usr/local/var/log  #debug use.
     secrets:
       - crm_secrets
     expose:
@@ -68,10 +68,9 @@ secrets:
 #  dns_api:
 #    file: ./secrets/dns_api.json  ##### need modify  #####
   ssl:
-    file: ./secrets/ssl.json  ##### need modify  #####
+    file: ./secrets/ssl-dev.json  ##### need modify  #####
 
 volumes:
-  db-volume: null
+  db-dev-volume: null
   dhparam-volume: null
-  content: null
-
+  content-dev: null

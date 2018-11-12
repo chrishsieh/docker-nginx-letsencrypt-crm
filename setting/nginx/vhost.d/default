@@ -4,7 +4,7 @@ server_tokens off;
 include mime.types;
 default_type  application/octet-stream;
 fastcgi_index index.php;
-root /var/www/html;
+root /var/www/CRM/src;
 
 location /api/ {
 	try_files $uri /api/index.php$is_args$args;
