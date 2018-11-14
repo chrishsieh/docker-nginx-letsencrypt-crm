@@ -11,6 +11,7 @@
 1. https://myapp.localtest.me, *.localtest.me ip is 127.0.0.1, no need to change hosts file, default user is admin, password is changeme.
 
 ## Debug
+1. Use docker-compose-dev.yml for develop, default url is https://dev.localtest.me
 1. Modify docker-compose.yml, enabled debug setting.
 1. Remove setting\nginx\vhost.d\default first line '#'
 1. docker-compose down;docker-compose up -d
