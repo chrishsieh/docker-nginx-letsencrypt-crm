@@ -29,4 +29,4 @@
 ## Note
 1. When use letsencrypt dns mode, need wait 60 seconds for dns check.
 1. Change Hyper-V to VirtualBox or VMware, use admin run command "bcdedit /set hypervisorlaunchtype off" then reboot PC,
-Change VirtualBox or VMware to Hyper-V, use admin run command "bcdedit /set hypervisorlaunchtype auto" then reboot PC
+Change VirtualBox or VMware to Hyper-V, use admin run command "bcdedit /set hypervisorlaunchtype auto" then reboot PC, others issue can try https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard-manage#turn-off-with-hardware-readiness-tool, disable Disable Windows Defender Credential Guard.
