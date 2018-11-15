@@ -1,3 +1,5 @@
 /content
 /keys
 /log
+/.vagrant
+/vagrant-coreos/.vagrant

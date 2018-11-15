@@ -2,7 +2,8 @@ version: '3.5'
 services:
   web:
     container_name: web
-    build: ./build/nginx-proxy
+#    build: ./build/nginx-proxy
+    image: chrishsieh/nginx-proxy:latest
     environment:
       - DEFAULT_HOST=myapp.localtest.me
     ports:

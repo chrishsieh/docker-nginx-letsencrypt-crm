@@ -2,7 +2,8 @@ version: '3.5'
 services:
   web:
     container_name: web
-    build: ./build/nginx-proxy
+#    build: ./build/nginx-proxy
+    image: chrishsieh/nginx-proxy:latest
     environment:
       - DEFAULT_HOST=myapp.localtest.me
     ports:
@@ -29,7 +30,8 @@ services:
 
   db:
     container_name: db
-    build: ./build/mysql
+#    build: ./build/mysql
+    image: chrishsieh/mysql:latest
     volumes:
       - db-volume:/var/lib/mysql
       - ./setting/sql/sql_setup:/usr/local/prechk
@@ -38,8 +40,8 @@ services:
 
   php:
     container_name: php
-    build:
-      context: ./build/php-fpm
+#    build: ./build/php-fpm
+    image: chrishsieh/php-fpm:latest
     links:
       - db
     environment:
