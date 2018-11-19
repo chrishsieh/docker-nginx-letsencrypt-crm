@@ -26,6 +26,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision :docker
   config.vm.provision :docker_compose,
     compose_version: "1.23.1",
-    yml: "/vagrant/docker-compose.yml",
+    yml: "/vagrant/docker-compose-dev.yml",
     run: "always"
 end
