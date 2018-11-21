@@ -1,18 +1,16 @@
 #!/bin/bash
+
 if ! [ -f ./CRM/src/index.php ]; then
-    su -l www-data -s /bin/bash
-    git clone https://github.com/ChurchCRM/CRM.git CRM;
+    git clone https://github.com/ChurchCRM/CRM.git CRM
     cd CRM && \
     chmod +x ./travis-ci/*.sh && \
     chmod +x ./scripts/*.sh && \
     cp BuildConfig.json.example BuildConfig.json
-    npm install grunt i18next i18next-extract-gettext --save-dev
     npm install
-    npm audit fix
     npm run composer-install
     npm run orm-gen
     npm run install
-#    npm run package
+    npm run update-signatures
     chown -R www-data:www-data /var/www/CRM
 fi
 

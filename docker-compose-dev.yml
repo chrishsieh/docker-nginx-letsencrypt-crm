@@ -2,7 +2,6 @@ version: '3.5'
 services:
   web:
     container_name: web
-#    build: ./build/nginx-proxy
     image: chrishsieh/nginx-proxy:latest
     environment:
       - DEFAULT_HOST=myapp.localtest.me
@@ -26,11 +25,9 @@ services:
     secrets:
 #      - dns_api
       - ssl
-#    network_mode: "host"
 
   db:
     container_name: db
-#    build: ./build/mysql
     image: chrishsieh/mysql:latest
     volumes:
       - db-dev-volume:/var/lib/mysql
@@ -40,8 +37,7 @@ services:
 
   php-dev:
     container_name: php-dev
-#    build: ./build/php-fpm-dev
-    image: chrishsieh/php-fpm-dev:latest
+    build: ./build/php-fpm-dev
     links:
       - db
     environment:
@@ -54,7 +50,7 @@ services:
 #      - ENABLE_ACME=true       ##### letsencrypt setting
       - ENABLE_HSTS=true
     volumes:
-#      - ./content/www:/var/www # php file debug in windows failed
+#      - ./content/www:/var/www # vagrant need run at admin for winnfsd fix soft-link issue.
       - content-dev:/var/www
       - ./setting/php-dev/php-fpm.d:/usr/local/etc/php-fpm.d:ro
       - ./setting/php-dev/crmsetup:/usr/local/prechk

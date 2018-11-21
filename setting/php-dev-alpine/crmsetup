@@ -1,4 +1,8 @@
 #!/bin/ash
+cho "alias npm='npm --no-bin-links'" >> ~/.bashrc
+echo "alias ls='ls --color=auto'" >> ~/.bashrc
+source ~/.bashrc
+
 if ! [ -f ./CRM/src/index.php ]; then
     su www-data
     git clone https://github.com/ChurchCRM/CRM.git CRM;
@@ -6,12 +10,11 @@ if ! [ -f ./CRM/src/index.php ]; then
     chmod +x ./travis-ci/*.sh && \
     chmod +x ./scripts/*.sh && \
     cp BuildConfig.json.example BuildConfig.json
-    npm install grunt --save-dev
     npm install
-    npm audit fix
     npm run composer-install
     npm run orm-gen
     npm run install
+    npm run update-signatures
     chown -R www-data:www-data /var/www/CRM
 fi
 
