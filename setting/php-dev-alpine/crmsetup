@@ -1,7 +1,4 @@
 #!/bin/ash
-cho "alias npm='npm --no-bin-links'" >> ~/.bashrc
-echo "alias ls='ls --color=auto'" >> ~/.bashrc
-source ~/.bashrc
 
 if ! [ -f ./CRM/src/index.php ]; then
     su www-data
@@ -10,7 +7,9 @@ if ! [ -f ./CRM/src/index.php ]; then
     chmod +x ./travis-ci/*.sh && \
     chmod +x ./scripts/*.sh && \
     cp BuildConfig.json.example BuildConfig.json
-    npm install
+    npm install node-sass
+    npm install --unsafe-perm
+    npm audit fix
     npm run composer-install
     npm run orm-gen
     npm run install

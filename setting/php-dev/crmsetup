@@ -6,7 +6,7 @@ if ! [ -f ./CRM/src/index.php ]; then
     chmod +x ./travis-ci/*.sh && \
     chmod +x ./scripts/*.sh && \
     cp BuildConfig.json.example BuildConfig.json
-    npm install
+    npm install --unsafe-perm
     npm run composer-install
     npm run orm-gen
     npm run install
