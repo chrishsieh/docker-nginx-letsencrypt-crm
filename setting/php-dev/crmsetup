@@ -1,11 +1,11 @@
 #!/bin/bash
 
 if ! [ -f ./CRM/src/index.php ]; then
-    git clone https://github.com/ChurchCRM/CRM.git CRM
     cd CRM && \
+    git fetch --all && \
+    git reset --hard origin/master && \
     chmod +x ./travis-ci/*.sh && \
-    chmod +x ./scripts/*.sh && \
-    cp BuildConfig.json.example BuildConfig.json
+    chmod +x ./scripts/*.sh
     npm install --unsafe-perm
     npm run composer-install
     npm run orm-gen

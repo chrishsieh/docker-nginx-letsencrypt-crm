@@ -50,8 +50,8 @@ services:
 #      - ENABLE_ACME=true       ##### letsencrypt setting
       - ENABLE_HSTS=true
     volumes:
-#      - ./content/www:/var/www # vagrant need run at admin for winnfsd fix soft-link issue.
-      - content-dev:/var/www
+      - ./content/:/var/www/CRM/src
+#      - content-dev:/var/www
       - ./setting/php-dev/php-fpm.d:/usr/local/etc/php-fpm.d:ro
       - ./setting/php-dev/crmsetup:/usr/local/prechk
       - ./log/php-dev:/usr/local/var/log  #debug use.
@@ -71,4 +71,4 @@ secrets:
 volumes:
   db-dev-volume: null
   dhparam-volume: null
-  content-dev: null
+#  content-dev: null
