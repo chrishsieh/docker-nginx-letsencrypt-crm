@@ -8,7 +8,7 @@
 - Use Vagrant(default is docker-compose-dev.yml)
   >1. Install VaitualBox and Vagrant.
   >1. Run "vagrant up".
-  >1. For develop use software-link support, need run vagrant up in administrator.(https://github.com/winnfsd/vagrant-winnfsd/issues/66)
+  >1. ~~For develop use software-link support, need run vagrant up in administrator.(https://github.com/winnfsd/vagrant-winnfsd/issues/66)~~
   >1. Recommand use putty to connect. reference https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY
   >1. vagrant will auto run docker-compose up -d, ssh to vagrant machine, /vagrant run "docker-compose logs check status.
 
