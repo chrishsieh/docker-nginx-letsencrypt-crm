@@ -1,9 +1,14 @@
 # Docker-nginx-letsencrypt-CRM(ChurchCRM)
 
-## Windows docker
-1. Install Docker for Windows.(Hyper-V will disable VirtualBox and VMware)
-1. Run Docker for Windows.Open Windows Power Shell. Run docker login.If fail, restart Docker for Windows.
-1. In Windows Power Shell, run windows_path_fix.ps1 to fix path issue.
+## For Windows
+- Use Docker for Windows
+  >1. Install Docker for Windows.(Hyper-V will disable VirtualBox and VMware)
+  >1. Run Docker for Windows.Open Windows Power Shell. Run docker login.If fail, restart Docker for Windows.
+  >1. In Windows Power Shell, run windows_path_fix.ps1 to fix path issue.
+- Use Vagrant(default is docker-compose-dev.yml)
+  >1. Install VaitualBox and Vagrant.
+  >1. Run "vagrant up".
+  >1. For develop use software-link support, need run vagrant up in administrator.(https://github.com/winnfsd/vagrant-winnfsd/issues/66)
 
 ## Install
 1. docker-compose build
