@@ -55,7 +55,7 @@ services:
     volumes:
 #      - ./content/www:/var/www # php file debug
       - content:/var/www
-      - ./setting/php/default.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./setting/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/php/crmsetup:/usr/local/prechk
 #      - ./log/php:/usr/local/var/log  #debug use.
     secrets:

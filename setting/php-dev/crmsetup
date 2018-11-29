@@ -3,10 +3,11 @@
 if ! [ -f ./CRM/src/index.php ]; then
     cd CRM && \
     git fetch --all && \
-    git reset --hard origin/master && \
+#    git reset --hard origin/master && \
+    git checkout origin/master src && \
     chmod +x ./travis-ci/*.sh && \
     chmod +x ./scripts/*.sh
-    npm install --unsafe-perm
+#    npm install --unsafe-perm
     npm run composer-install
     npm run orm-gen
     npm run install

@@ -21,7 +21,6 @@ services:
       - ./keys/certs:/etc/nginx/certs #certs folder
 #      - ./setting/nginx/Procfile-debug:/app/Procfile:ro  #debug nginx mode. /setting/nginx/vhost.d/default need enable error_log /var/debug/error.log debug;
 #      - ./log/nginx:/var/debug #debug use.
-      - ./setting/nginx/nginx.tmpl:/app/nginx.tmpl:ro
     restart: always
     secrets:
 #      - dns_api
@@ -56,13 +55,11 @@ services:
     volumes:
 #      - ./content/www:/var/www # php file debug
       - content:/var/www
-      - ./setting/php/php-fpm.d:/usr/local/etc/php-fpm.d:ro
+      - ./setting/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/php/crmsetup:/usr/local/prechk
 #      - ./log/php:/usr/local/var/log  #debug use.
     secrets:
       - crm_secrets
-    expose:
-      - "9000-9002"
 
 secrets:
   crm_secrets:
