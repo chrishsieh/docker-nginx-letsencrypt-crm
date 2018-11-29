@@ -17,7 +17,8 @@ RUN git clone https://github.com/ChurchCRM/CRM.git CRM && \
     npm run composer-install && \
     npm run orm-gen && \
     npm run install && \
-    npm run update-signatures
+    npm run update-signatures && \
+    chown -R www-data:www-data /var/www/CRM
 
 # Run the configsetup file on container start
 ENTRYPOINT ["/usr/local/bin/presetup"]

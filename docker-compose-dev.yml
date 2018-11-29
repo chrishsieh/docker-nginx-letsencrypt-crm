@@ -12,6 +12,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - dhparam-volume:/etc/nginx/dhparam/
       - ./setting/nginx/vhost.d/:/etc/nginx/vhost.d:ro
+      - ./setting/nginx/stream.d/:/etc/nginx/stream.d
       - ./setting/nginx/proxy.conf:/etc/nginx/proxy.conf:ro
       - ./setting/nginx/updatessl.sh:/app/prechk      #if debug need disable this.
 #      - ./setting/nginx/updatessl-debug.sh:/app/prechk #debug use.
@@ -49,8 +50,8 @@ services:
 #      - ENABLE_ACME=true       ##### letsencrypt setting
       - ENABLE_HSTS=true
     volumes:
-      - ./content/:/var/www/CRM/src
-#      - content-dev:/var/www
+      - ./content/:/var/www/CRM/src  ##### php code
+      - content-dev:/var/www         ##### builded code update volume
       - ./setting/php-dev/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/php-dev/crmsetup:/usr/local/prechk
       - ./log/php-dev:/usr/local/var/log  #debug use.
@@ -68,4 +69,4 @@ secrets:
 volumes:
   db-dev-volume: null
   dhparam-volume: null
-#  content-dev: null
+  content-dev: null

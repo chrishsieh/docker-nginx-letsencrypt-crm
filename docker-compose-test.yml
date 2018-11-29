@@ -13,6 +13,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - dhparam-volume:/etc/nginx/dhparam/
       - ./setting/nginx/vhost.d/:/etc/nginx/vhost.d:ro
+      - ./setting/nginx/stream.d/:/etc/nginx/stream.d
       - ./setting/nginx/proxy.conf:/etc/nginx/proxy.conf:ro
       - ./setting/nginx/updatessl.sh:/app/prechk
       - ./setting/nginx/dns_dynu.sh:/acme.sh/dnsapi/dns_dynu.sh # fix dynu.sh issue
