@@ -7,10 +7,10 @@ if ! [ -f ./CRM/src/index.php ]; then
     git checkout origin/master src && \
     chmod +x ./travis-ci/*.sh && \
     chmod +x ./scripts/*.sh
-#    npm install --unsafe-perm
+    npm install --unsafe-perm
+    npm audit fix
     npm run composer-install
     npm run orm-gen
-    npm run install
     npm run update-signatures
     chown -R www-data:www-data /var/www/CRM
 fi

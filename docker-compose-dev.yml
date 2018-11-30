@@ -54,6 +54,7 @@ services:
       - content-dev:/var/www         ##### builded code update volume
       - ./setting/php-dev/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/php-dev/crmsetup:/usr/local/prechk
+      - ./secrets/BuildConfig.json:/var/www/CRM/BuildConfig.json
       - ./log/php-dev:/usr/local/var/log  #debug use.
     secrets:
       - crm_secrets

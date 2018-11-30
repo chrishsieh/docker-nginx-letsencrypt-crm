@@ -35,8 +35,8 @@ services:
     secrets:
       - crm_secrets
 
-  php-dev:
-    container_name: php-dev
+  php-dev-alpine:
+    container_name: php-dev-alpine
     build: ./build/php-fpm-dev-alpine
     links:
       - db
@@ -54,6 +54,7 @@ services:
       - content-dev-alpine:/var/www    ##### builded code update volume
       - ./setting/php-dev-alpine/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/php-dev-alpine/crmsetup:/usr/local/prechk
+      - ./secrets/BuildConfig.json:/var/www/CRM/BuildConfig.json
       - ./log/php-dev:/usr/local/var/log  #debug use.
     secrets:
       - crm_secrets
