@@ -1,21 +1,26 @@
 #!/bin/ash
 
-if ! [ -f ./CRM/src/index.php ]; then
+if ! [ -f /var/www/CRM/src/index.php ]; then
     cd CRM && \
-    git fetch --all && \
-#    git reset --hard origin/master && \
-    git checkout origin/master src && \
+    git fetch --all
+    if [[ -z "${GIT_RESET}" ]]; then
+        if ! [[ -z "${GIT_CHECKOUT}" ]]; then
+            git checkout $GIT_CHECKOUT;
+        fi
+    else
+        git reset --hard $GIT_RESET;
+    fi
     chmod +x ./travis-ci/*.sh && \
     chmod +x ./scripts/*.sh
+    chown -R www-data:www-data /var/www/CRM
     npm install --unsafe-perm
     npm audit fix
     npm run composer-install
     npm run orm-gen
     npm run update-signatures
-    chown -R www-data:www-data /var/www/CRM
 fi
 
-if ! [ -f ./CRM/src/Include/Config.php ]; then
+if ! [ -f /var/www/CRM/src/Include/Config.php ]; then
     cp /var/www/CRM/src/Include/Config.php.example /var/www/CRM/src/Include/Config.php
     chown www-data:www-data /var/www/CRM/src/Include/Config.php
     chmod 777 /var/www/CRM/src/Include/Config.php

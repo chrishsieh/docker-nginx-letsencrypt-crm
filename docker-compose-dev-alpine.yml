@@ -42,16 +42,21 @@ services:
       - db
     environment:
       - MYSQL_DB_HOST=db
-      - LC_ALL=en_US            ##### locale  #####
-      - VIRTUAL_HOST=dev.localtest.me  ##### need modify  #####
+      - LC_ALL=en_US                    ##### locale  #####
+      ##### if set will do git reset --hard $GIT_RESET(origin/master; origin/master src; adfca5d) #####
+      ##### , others do git checkout $GIT_CHECKOUT #####
+      - GIT_RESET=origin/master
+      ##### if set and $GIT_RESET is null will do git checkout $GIT_CHECKOUT(origin/master; origin/master src; adfca5d) #####
+      - GIT_CHECKOUT=origin/master src
+      - VIRTUAL_HOST=dev.localtest.me   ##### need modify  #####
       - VIRTUAL_PROTO=fastcgi
       - VIRTUAL_ROOT=/var/www/CRM/src
       - VIRTUAL_PORT=9000
-#      - ENABLE_ACME=true       ##### letsencrypt setting
       - ENABLE_HSTS=true
+#      - ENABLE_ACME=true               ##### letsencrypt setting
     volumes:
-      - ./content/www:/var/www/CRM/src ##### php code
-      - content-dev-alpine:/var/www    ##### builded code update volume
+      - ./content/www:/var/www/CRM/src  ##### php code
+      - content-dev-alpine:/var/www     ##### builded code update volume
       - ./setting/php-dev-alpine/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/php-dev-alpine/crmsetup:/usr/local/prechk
       - ./secrets/BuildConfig.json:/var/www/CRM/BuildConfig.json
