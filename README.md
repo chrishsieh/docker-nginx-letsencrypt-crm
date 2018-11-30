@@ -50,7 +50,7 @@
   >1. load builed image.
   >1. run prechk batch.(the batch path mapping windows file /setting/php-dev/crmsetup) can edit it in windows for need.
   >1. run service command.
-1. default web url is https://dev.localtest.me , if port 443 used, need modify docker-compose-dev.yml - "443:443" to - "8080:443" and connect with https://dev.localtest.me:8080, default user is admin, password is changeme.
+1. default web url is https://dev.localtest.me , if port 443 used, need modify Vagratfile $forwarded_ports = { 80 => 80, 443 => 8080} and connect with https://dev.localtest.me:8080, default user is admin, password is changeme.
 
 ## Other setting
 ### Auto DNS API
