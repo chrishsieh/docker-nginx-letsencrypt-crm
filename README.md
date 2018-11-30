@@ -25,13 +25,13 @@
 1. nginx and php debug information at ./log
 
 ## Develop
-1. In windows use vagrant, vagrant will run a ubuntu with docker inside. use putty to connect, default work folder is /vagrant, mapping to windows vagrant folder.
-1. Vagrant will auto run docker-compose with web, db and php-dev services.
-1. First time docker-compose will build php-dev image. others had pre-build as image. The image file system is readonly.
-1. default docker-compose use docker-compose-dev.yml in vagrant, can be change in Vagrantfile.
-1. Volume mapping CRM source code /var/www/CRM to docker local volume to keep modify, /var/www/CRM/src mapping to windows ./content, so can use windows editor to edit php code.
-1. After connect to vagrant, switch to /vagrant folder, can use docker-compose command.
-1. Had add alias dc to docker-compose.
+- In windows use vagrant, vagrant will run a ubuntu with docker inside. use putty to connect, default work folder is /vagrant, mapping to windows vagrant folder.
+- Vagrant will auto run docker-compose with web, db and php-dev services.
+- First time docker-compose will build php-dev image. others had pre-build as image. The image file system is readonly.
+- default docker-compose use docker-compose-dev.yml in vagrant, can be change in Vagrantfile.
+- Volume mapping CRM source code /var/www/CRM to docker local volume to keep modify, /var/www/CRM/src mapping to windows ./content, so can use windows editor to edit php code.
+- After connect to vagrant, switch to /vagrant folder, can use docker-compose command.
+- Had add alias dc to docker-compose.
   >- dc up -d: run all services.
   >- dc down: stop and remove all services
   >- dc ps: show services running status.
@@ -39,18 +39,19 @@
   >- dc logs: show all services logs.
   >- dc logs php-dev: only show php-dev services log.
   >- dc exec php-dev bash:connect to php-dev services, in this service work folder is /var/www/CRM, can use npm command.
-1. Docker command.
+- Docker command.
   >- docker ps: show all docker running services.
   >- docker system prune -f: remove all no running data.
   >- docker images: show all build or pulled images.
   >- docker rmi <image id>: remove selected images.
   >- docker volume ls: show docker local volume.
   >- docker volume rm <volume name>: remove selected volume.
-1. System up follow:
+- System up follow:
   >1. load builed image.
   >1. run prechk batch.(the batch path mapping windows file /setting/php-dev/crmsetup) can edit it in windows for need.
   >1. run service command.
-1. default web url is https://dev.localtest.me , if port 443 used, need modify Vagratfile $forwarded_ports = { 80 => 80, 443 => 8080} and connect with https://dev.localtest.me:8080, default user is admin, password is changeme.
+- default web url is https://dev.localtest.me , if port 443 used, need modify Vagratfile $forwarded_ports = { 80 => 80, 443 => 8080} and connect with https://dev.localtest.me:8080, default user is admin, password is changeme.
+- Build from ChurchCRM git version: dc down, delete /content/index.php, set GIT RESET version in docker-compose-dev.yml, dc up -d
 
 ## Other setting
 ### Auto DNS API
