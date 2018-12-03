@@ -19,9 +19,8 @@
 
 ## Debug
 1. Use docker-compose-dev.yml for develop, default url is https://dev.localtest.me
-1. Modify docker-compose.yml, enabled debug setting.
-1. Remove setting\nginx\vhost.d\default first line '#'
-1. docker-compose down;docker-compose up -d
+1. Modify docker-compose-dev.yml, enabled debug setting, if need trace nginx, enable php DEBUG_MODE=true.
+1. docker-compose -f docker-compose-dev.yml down;docker-compose -f docker-compose-dev.yml up -d
 1. nginx and php debug information at ./log
 
 ## Develop
