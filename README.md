@@ -52,6 +52,10 @@
   >1. run service command.
 - default web url is https://dev.localtest.me , if port 443 used, need modify Vagratfile $forwarded_ports = { 80 => 80, 443 => 8080} and connect with https://dev.localtest.me:8080, default user is admin, password is changeme.
 - Build from ChurchCRM git version: dc down, delete /content/index.php, set GIT RESET version in docker-compose-dev.yml, dc up -d
+- Xdebug with vscode:
+  >- Need set .\setting\php-dev\xdebug.ini xdebug.remote_host, for windows the ip is the pc ip, for php-fpm send information to IDE.
+  >- Vscode need install PHP Debug. the debug setting at ./vscode/launch.json.
+  >- Enable vscode debug first, then connect to https://dev.localtest.me to trigger debug.
 
 ## Other setting
 ### Auto DNS API
