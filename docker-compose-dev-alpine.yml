@@ -14,13 +14,14 @@ services:
       - ./setting/nginx/vhost.d/:/etc/nginx/vhost.d:ro
       - ./setting/nginx/stream.d/:/etc/nginx/stream.d
       - ./setting/nginx/proxy.conf:/etc/nginx/proxy.conf:ro
-      - ./setting/nginx/updatessl.sh:/app/prechk      #if debug need disable this.
-#      - ./setting/nginx/updatessl-debug.sh:/app/prechk #debug use.
+      - ./setting/nginx/nginx.tmpl:/app/nginx.tmpl:ro
       - ./setting/nginx/dns_dynu.sh:/acme.sh/dnsapi/dns_dynu.sh # fix dynu.sh issue
-      - ./keys/acme:/acmecerts #acme.sh install folder
-      - ./keys/certs:/etc/nginx/certs #certs folder
-#      - ./setting/nginx/Procfile-debug:/app/Procfile:ro  #debug nginx mode. /setting/nginx/vhost.d/default need enable error_log /var/debug/error.log debug;
-      - ./log/nginx:/var/debug #debug use.
+      - ./keys/acme:/acmecerts                                  #acme.sh install folder
+      - ./keys/certs:/etc/nginx/certs                           #certs folder
+      - ./setting/nginx/updatessl.sh:/app/prechk                #if debug need disable this.
+#      - ./setting/nginx/updatessl-debug.sh:/app/prechk         #debug use.
+#      - ./setting/nginx/Procfile-debug:/app/Procfile:ro        #debug nginx mode.
+      - ./log/nginx:/var/log/nginx                               #log
     restart: always
     secrets:
 #      - dns_api
@@ -52,8 +53,9 @@ services:
       - VIRTUAL_PROTO=fastcgi
       - VIRTUAL_ROOT=/var/www/CRM/src
       - VIRTUAL_PORT=9000
-      - ENABLE_HSTS=true
+#      - ENABLE_HSTS=true
 #      - ENABLE_ACME=true               ##### letsencrypt setting
+#      - DEBUG_MODE=true
     volumes:
       - ./content/www:/var/www/CRM/src  ##### php code
       - content-dev-alpine:/var/www     ##### builded code update volume
