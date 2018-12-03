@@ -42,10 +42,11 @@
 - Docker command.
   >- docker ps: show all docker running services.
   >- docker system prune -f: remove all no running data.
-  >- docker images: show all build or pulled images.
+  >- docker images: show all builed or pulled images.
   >- docker rmi <image id>: remove selected images.
   >- docker volume ls: show docker local volume.
   >- docker volume rm <volume name>: remove selected volume.
+  >- docker volume prune: prune all volumes.
 - System up follow:
   >1. load builed image.
   >1. run prechk batch.(the batch path mapping windows file /setting/php-dev/crmsetup) can edit it in windows for need.
