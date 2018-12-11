@@ -1,0 +1,16 @@
+{
+	"sshextension.serverList": [{
+		"name": "vagrant",
+		"host": "localhost",
+		"port": 2222,
+		"username": "vagrant",
+		"privateKey": ".vagrant/machines/default/virtualbox/private_key",
+		"project": {
+			"/": "/vagrant",
+		},
+		"path": "/",
+		"customCommands": [
+			"pwd"
+		]
+	}]
+}
