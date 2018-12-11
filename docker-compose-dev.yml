@@ -17,7 +17,6 @@ services:
       - ./setting/nginx/nginx.tmpl:/app/nginx.tmpl:ro
       - ./keys/acme:/acmecerts                            #acme.sh install folder
       - ./keys/certs:/etc/nginx/certs                     #certs folder
-      - ./setting/nginx/dns_dynu.sh:/acme.sh/dnsapi/dns_dynu.sh   # fix dynu.sh issue
       - ./setting/nginx/updatessl-debug.sh:/app/prechk    #debug use.
       - ./setting/nginx/Procfile-debug:/app/Procfile:ro   #debug nginx mode.
       - ./log/nginx/:/var/log/nginx/                      #log
@@ -35,9 +34,13 @@ services:
     secrets:
       - crm_secrets
 
-  php-dev:
-    container_name: php-dev
-    build: ./build/php-fpm-dev
+  php:
+    container_name: php
+    build:
+      context: ./build/php
+      args:
+        ##### CODE_VERSION avaiable value: latest, alpine-latest
+        CODE_VERSION: latest
     links:
       - db
     environment:
@@ -47,21 +50,22 @@ services:
       - GIT_RESET=origin/master
       ##### if set and $GIT_RESET is null will do git checkout $GIT_CHECKOUT(origin/master; origin/master src; adfca5d) #####
       - GIT_CHECKOUT=origin/master src
+      - LC_ALL=en_US                    ##### locale only used for alpine OS #####
       - VIRTUAL_HOST=dev.localtest.me   ##### need modify  #####
       - VIRTUAL_PROTO=fastcgi
       - VIRTUAL_ROOT=/var/www/CRM/src
       - VIRTUAL_PORT=9000
-#      - DEBUG_MODE=true
+#      - DEBUG_MODE=true                 ##### nginx debug trace #####
 #      - ENABLE_HSTS=true
-#      - ENABLE_ACME=true               ##### letsencrypt setting
+#      - ENABLE_ACME=true                ##### letsencrypt setting
     volumes:
-      - ./content/:/var/www/CRM/src     ##### php code
-      - content-dev:/var/www            ##### builded code update volume
+      - ./content/:/var/www/CRM/src         ##### php code
+      - content-dev:/var/www                ##### builded code update volume
       - ./setting/php-dev/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini:ro
       - ./setting/php-dev/crmsetup:/usr/local/prechk
       - ./secrets/BuildConfig.json:/var/www/CRM/BuildConfig.json    ##### need modify  #####
-      - ./log/php-dev:/usr/local/var/log    #debug use.
+      - ./log/php-dev:/usr/local/var/log    #### debug use.
     secrets:
       - crm_secrets
 

@@ -12,7 +12,7 @@ $set_environment_variables = <<SCRIPT
 tee "/etc/profile.d/myvars.sh" > "/dev/null" <<EOF
 # environment variables.
 # change default docker-compose load file name
-export COMPOSE_FILE=docker-compose-dev.yml
+export COMPOSE_FILE=docker-compose.yml
 alias dc='docker-compose'
 EOF
 SCRIPT
@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :docker
   config.vm.provision :docker_compose,
     compose_version: "1.23.1",
-    yml: "/vagrant/docker-compose-dev.yml",
+    yml: "/vagrant/docker-compose.yml",
     command_options: { down: "", up: "-d"},
     run: "always"
 end

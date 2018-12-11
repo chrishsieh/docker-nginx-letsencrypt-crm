@@ -16,7 +16,6 @@ services:
       - ./setting/nginx/stream.d/:/etc/nginx/stream.d
       - ./setting/nginx/proxy.conf:/etc/nginx/proxy.conf:ro
       - ./setting/nginx/nginx.tmpl:/app/nginx.tmpl:ro
-      - ./setting/nginx/dns_dynu.sh:/acme.sh/dnsapi/dns_dynu.sh # fix dynu.sh issue
       - ./keys/acme:/acmecerts #acme.sh install folder
       - ./keys/certs:/etc/nginx/certs #certs folder
       - ./setting/nginx/updatessl.sh:/app/prechk                 #if debug need disable this.

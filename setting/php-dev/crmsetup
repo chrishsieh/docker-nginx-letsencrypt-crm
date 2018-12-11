@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if ! [ -f /var/www/CRM/src/index.php ]; then
     cd CRM && \

@@ -9,9 +9,14 @@ services:
     secrets:
       - crm_secrets
 
-  php-dev:
-    container_name: php-dev
-    build: ./build/php-apache-dev
+  php:
+    container_name: php
+    build:
+      context: ./build/php
+      args:
+        - IMG_VERSION=php-apache-dev
+        - CODE_VERSION=latest
+        - CMD_STRING=apache2-foreground
     links:
       - db
     environment:
