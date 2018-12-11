@@ -1,0 +1,64 @@
+#!/bin/bash
+
+cp /etc/apache2/sites-available/www.conf /etc/apache2/sites-available/ChurchCRM.conf
+cp /etc/apache2/sites-available/ssl.conf /etc/apache2/sites-available/ChurchCRM-ssl.conf
+sed -i "s/#ServerName www.example.com/ServerName ${VIRTUAL_HOST}/g" /etc/apache2/sites-available/ChurchCRM.conf
+sed -i "s\DocumentRoot /var/www/html\DocumentRoot ${VIRTUAL_ROOT}\g" /etc/apache2/sites-available/ChurchCRM.conf
+sed -i "s\DocumentRoot /var/www/html\DocumentRoot ${VIRTUAL_ROOT}\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
+sed -i "s\SSLCertificateFile	/etc/ssl/certs/ssl-cert-snakeoil.pem\SSLCertificateFile	/etc/ssl/certs/${VIRTUAL_HOST}.crt\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
+sed -i "s\SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key\SSLCertificateKeyFile /etc/ssl/certs/${VIRTUAL_HOST}.key\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
+a2ensite ChurchCRM.conf
+a2enmod ssl
+a2ensite ChurchCRM-ssl.conf
+a2enmod rewrite
+
+if ! [ -f /var/www/CRM/src/index.php ]; then
+    cd CRM && \
+    git fetch --all
+    if [[ -z "${GIT_RESET}" ]]; then
+        if ! [[ -z "${GIT_CHECKOUT}" ]]; then
+            git checkout $GIT_CHECKOUT;
+        fi
+    else
+        git reset --hard $GIT_RESET;
+    fi
+    chmod +x ./travis-ci/*.sh && \
+    chmod +x ./scripts/*.sh
+    chown -R www-data:www-data /var/www/CRM
+    npm install --unsafe-perm
+    npm audit fix
+    npm run composer-install
+    npm run orm-gen
+    npm run update-signatures
+fi
+
+if ! [ -f /var/www/CRM/src/Include/Config.php ]; then
+    cp /var/www/CRM/src/Include/Config.php.example /var/www/CRM/src/Include/Config.php
+    chown www-data:www-data /var/www/CRM/src/Include/Config.php
+    chmod 777 /var/www/CRM/src/Include/Config.php
+
+    # Import Docker Secrets
+    MYSQL_USER=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER')
+    MYSQL_USER_PWD=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_PWD')
+    MYSQL_USER_DB=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_DB')
+    if [ $MYSQL_USER_PWD = "changeme" ]; then
+        figlet -f colossal "WARNING"
+        red=$(tput setaf 1) # Red
+        reset=$(tput sgr0)
+        echo "${red}*********************************************"
+        echo "${red}WARNING!!!"
+        echo "${red}YOU DID NOT CHANGE THE MYSQL_USER_PWD IN THE crm_secrets.json FILE!!!"
+        echo "${red}This is EXTREMELY insecure. Please go back and change the password to something more secure and re-build your images by running `docker-compose build`"
+        echo "${red}*********************************************"
+        ${reset}
+        echo ""
+    fi
+    # Create ChurchCRM Config File
+    sed -i "s/||DB_SERVER_NAME||/$MYSQL_DB_HOST/g" /var/www/CRM/src/Include/Config.php
+    sed -i "s/||DB_SERVER_PORT||/3306/g" /var/www/CRM/src/Include/Config.php
+    sed -i "s/||DB_NAME||/$MYSQL_USER_DB/g" /var/www/CRM/src/Include/Config.php
+    sed -i "s/||DB_USER||/$MYSQL_USER/g" /var/www/CRM/src/Include/Config.php
+    sed -i "s/||DB_PASSWORD||/$MYSQL_USER_PWD/g" /var/www/CRM/src/Include/Config.php
+    sed -i "s/||URL||//g" /var/www/CRM/src/Include/Config.php
+    sed -i "s/||ROOT_PATH||//g" /var/www/CRM/src/Include/Config.php
+fi
