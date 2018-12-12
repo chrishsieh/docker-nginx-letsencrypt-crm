@@ -58,7 +58,7 @@ services:
       - ./content/:/var/www/CRM/src     ##### php code
       - content-dev:/var/www            ##### builded code update volume
       - ./setting/php-dev/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
-      - ./setting/php-dev/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini:ro
+      - ./setting/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini:ro
       - ./setting/php-dev/crmsetup:/usr/local/prechk
       - ./secrets/BuildConfig.json:/var/www/CRM/BuildConfig.json    ##### need modify  #####
       - ./log/php-dev:/usr/local/var/log    #debug use.

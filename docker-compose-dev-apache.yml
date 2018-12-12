@@ -32,7 +32,7 @@ services:
       - ./keys/certs:/etc/ssl/certs     #certs folder
       - ./setting/php-apache-dev/www.conf:/etc/apache2/sites-available/www.conf:ro
       - ./setting/php-apache-dev/ssl.conf:/etc/apache2/sites-available/ssl.conf:ro
-      - ./setting/php-apache-dev/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini:ro
+      - ./setting/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini:ro
       - ./setting/php-apache-dev/crmsetup:/usr/local/prechk
       - ./secrets/BuildConfig.json:/var/www/CRM/BuildConfig.json    ##### need modify  #####
       - ./log/php-dev:/usr/local/var/log    #debug use.
