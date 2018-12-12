@@ -5,11 +5,12 @@
   >1. Install Docker for Windows.(Hyper-V will disable VirtualBox and VMware)
   >1. Run Docker for Windows.Open Windows Power Shell. Run docker login.If fail, restart Docker for Windows.
   >1. In Windows Power Shell, run windows_path_fix.ps1 to fix path issue.
-- Use Vagrant(default is docker-compose-dev.yml)
+- Use Vagrant
   >1. Install VaitualBox and Vagrant.
+  >1. Run vagrant_setting.ps1 to setting vagrant and xdebug ip.Can select nginx or apache, debian or alpine.
   >1. Run "vagrant up".
   >1. ~~For develop use software-link support, need run vagrant up in administrator.(https://github.com/winnfsd/vagrant-winnfsd/issues/66)~~
-  >1. Recommand use putty to connect. reference https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY
+  >1. Recommand use putty to connect. reference https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY. If use vscode can use SSHExtension to open ssh terminal.
   >1. vagrant will auto run docker-compose up -d, ssh to vagrant machine, /vagrant run "docker-compose logs check status.
 
 ## Install
@@ -52,10 +53,14 @@
   >1. run service command.
 - default web url is https://dev.localtest.me , if port 443 used, need modify Vagratfile $forwarded_ports = { 80 => 80, 443 => 8080} and connect with https://dev.localtest.me:8080, default user is admin, password is changeme.
 - Build from ChurchCRM git version: dc down, delete /content/index.php, set GIT RESET version in docker-compose-dev.yml, dc up -d
-- Xdebug with vscode:
-  >- Need set .\setting\php-dev\xdebug.ini xdebug.remote_host, for windows the ip is the pc ip, for php-fpm send information to IDE.
-  >- Vscode need install PHP Debug. the debug setting at ./vscode/launch.json.
-  >- Enable vscode debug first, then connect to https://dev.localtest.me to trigger debug.
+- vscode setting:
+  - Xdebug with vscode:
+    >- Vscode need install PHP Debug. the debug setting at ./vscode/launch.json.
+    >- Enable vscode debug first, then connect to https://dev.localtest.me to trigger debug.
+  - SSHExtension in vscode:
+    >- Setting at ./vscode/settings.json.
+    >- F1->SSHExtension: Open SSH Connection->vagrant to open a ssh terminal to vagrant.
+    >- PowerShell need use advance mode.
 
 ## Other setting
 ### Auto DNS API
