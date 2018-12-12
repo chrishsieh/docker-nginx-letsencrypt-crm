@@ -5,8 +5,9 @@ cp /etc/apache2/sites-available/ssl.conf /etc/apache2/sites-available/ChurchCRM-
 sed -i "s/#ServerName www.example.com/ServerName ${VIRTUAL_HOST}/g" /etc/apache2/sites-available/ChurchCRM.conf
 sed -i "s\DocumentRoot /var/www/html\DocumentRoot ${VIRTUAL_ROOT}\g" /etc/apache2/sites-available/ChurchCRM.conf
 sed -i "s\DocumentRoot /var/www/html\DocumentRoot ${VIRTUAL_ROOT}\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
-sed -i "s\SSLCertificateFile	/etc/ssl/certs/ssl-cert-snakeoil.pem\SSLCertificateFile	/etc/ssl/certs/${VIRTUAL_HOST}.crt\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
-sed -i "s\SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key\SSLCertificateKeyFile /etc/ssl/certs/${VIRTUAL_HOST}.key\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
+sed -i "s\SSLCertificateFile	/etc/ssl/certs/ssl-cert-snakeoil.pem\SSLCertificateFile	/etc/apache2/certs/${VIRTUAL_HOST}.crt.pem\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
+sed -i "s\SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key\SSLCertificateKeyFile /etc/apache2/certs/${VIRTUAL_HOST}.key.pem\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
+/app/updatessl.sh updatessl
 a2ensite ChurchCRM.conf
 a2enmod ssl
 a2ensite ChurchCRM-ssl.conf

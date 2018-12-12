@@ -41,6 +41,7 @@ services:
       args:
         ##### CODE_VERSION avaiable value: latest, alpine-latest
         CODE_VERSION: latest
+    image: php-nginx-dev:latest
     links:
       - db
     environment:

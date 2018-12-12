@@ -19,7 +19,9 @@ if ($Dev -eq "yes") {
 
 	$replace_file = ".\$Docker_Compose_file"
 	(Get-Content $replace_file) -replace ("CODE_VERSION: (.*)$", "CODE_VERSION: $Build_Code_Version") | Out-File -encoding ASCII $replace_file
+	(Get-Content $replace_file) -replace ("image: php-nginx-dev:(.*)$", "image: php-nginx-dev:$Build_Code_Version") | Out-File -encoding ASCII $replace_file
 	Write-Host "$Docker_Compose_file updated"
+	Write-Host "Getting Host IP ..."
 	.\replace_xdebug_host_ip.ps1
 	Write-Host "xdebug.ini updated"
 }
