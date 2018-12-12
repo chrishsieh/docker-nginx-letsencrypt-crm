@@ -13,6 +13,11 @@
   >1. Recommand use putty to connect. reference https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY. If use vscode can use SSHExtension to open ssh terminal.
   >1. vagrant will auto run docker-compose up -d, ssh to vagrant machine, /vagrant run "docker-compose logs check status.
 
+## Version note
+1. Use vagrant_setting.ps1 to select different version.
+1. For development single web site, use apache.
+1. For development multi web sites, use nginx, if only use en_US locale can use alpine OS for small size, others use debian OS.
+
 ## Install
 1. docker-compose build
 1. docker-compose up -d, wait ChurchCRM install.
@@ -27,8 +32,9 @@
 ## Develop
 - In windows use vagrant, vagrant will run a ubuntu with docker inside. use putty to connect, default work folder is /vagrant, mapping to windows vagrant folder.
 - Vagrant will auto run docker-compose with web, db and php-dev services.
+- If switch different image, need run docker-compose build --pull.
 - First time docker-compose will build php-dev image. others had pre-build as image. The image file system is readonly.
-- default docker-compose use docker-compose-dev.yml in vagrant, can be change in Vagrantfile.
+- ~~default docker-compose use docker-compose-dev.yml in vagrant, can be change in Vagrantfile.~~
 - Volume mapping CRM source code /var/www/CRM to docker local volume to keep modify, /var/www/CRM/src mapping to windows ./content, so can use windows editor to edit php code.
 - After connect to vagrant, switch to /vagrant folder, can use docker-compose command.
 - Had add alias dc to docker-compose.
