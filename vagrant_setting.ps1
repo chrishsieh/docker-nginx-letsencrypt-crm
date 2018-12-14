@@ -28,4 +28,9 @@ if ($Dev -eq "yes") {
 
 $replace_file = ".\Vagrantfile"
 (Get-Content $replace_file) -replace ("docker-compose(.*).yml", $Docker_Compose_file) | Out-File -encoding ASCII $replace_file
+if ($Docker_Compose_file -ne "docker-compose.yml") {
+    (Get-Content $replace_file) -replace ("v.memory =(.*)$", "v.memory = 2048") | Out-File -encoding ASCII $replace_file
+} else {
+    (Get-Content $replace_file) -replace ("v.memory =(.*)$", "v.memory = 1024") | Out-File -encoding ASCII $replace_file
+}
 Write-Host "Vagrantfile updated"
