@@ -9,7 +9,7 @@ WORKDIR /var/www
 COPY ./php.ini /usr/local/etc/php/
 
 RUN if [ "$IMG_VERSION" != "php-fpm" ]; then \
-    npm install grunt-cli i18next-extract-gettext -g && \
+    npm install grunt-cli i18next-extract-gettext github-release-notes -g && \
     echo "alias ls='ls --color=auto'" >> ~/.bashrc && \
     git clone https://github.com/ChurchCRM/CRM.git CRM && \
     cd CRM && \

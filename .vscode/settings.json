@@ -12,5 +12,7 @@
 		"customCommands": [
 			"pwd"
 		]
-	}]
+	}
+],
+"editor.insertSpaces": true
 }
