@@ -9,8 +9,8 @@ services:
     secrets:
       - crm_secrets
 
-  web:
-    container_name: web
+  php:
+    container_name: php
     build:
       context: ./build/php
       args:
