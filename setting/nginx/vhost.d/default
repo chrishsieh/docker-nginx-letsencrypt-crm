@@ -58,6 +58,12 @@ location ~* \.css$ {
 	include ./vhost.d/php-fpm_content_cache;
 }
 
+location ~* \.map$ {
+	add_header Content-Type 'application/octet-stream';
+	fastcgi_hide_header "Content-Type";
+	include ./vhost.d/php-fpm_content_cache;
+}
+
 location ~* \.js$ {
 	add_header Content-Type 'application/javascript';
 	fastcgi_hide_header "Content-Type";
