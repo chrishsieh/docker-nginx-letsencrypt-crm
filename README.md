@@ -10,7 +10,7 @@
   >1. Run vagrant_setting.ps1 to setting vagrant and xdebug ip.Can select nginx or apache, debian or alpine.
   >1. Run "vagrant up".
   >1. ~~For develop use software-link support, need run vagrant up in administrator.(https://github.com/winnfsd/vagrant-winnfsd/issues/66)~~
-  >1. Recommand use putty to connect. reference https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY. If use vscode can use SSHExtension to open ssh terminal.
+  >1. Recommand use putty to connect. reference https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY. ~~If use vscode can use SSHExtension to open ssh terminal.~~
   >1. vagrant will auto run docker-compose up -d, ssh to vagrant machine, /vagrant run "docker-compose logs check status.
 
 ## Version note
@@ -63,9 +63,6 @@
   - Xdebug with vscode:
     >- Vscode need install PHP Debug. the debug setting at ./vscode/launch.json.
     >- Enable vscode debug first, then connect to https://dev.localtest.me to trigger debug.
-  - SSHExtension in vscode:
-    >- Setting at ./vscode/settings.json.
-    >- F1->SSHExtension: Open SSH Connection->vagrant to open a ssh terminal to vagrant.
     >- PowerShell need use advance mode.
 
 ## Other setting
