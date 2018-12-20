@@ -29,6 +29,11 @@ latest_docker_install_script = <<SCRIPT
     chown root:root /opt/bin/docker-compose
 SCRIPT
 
+fix_dns_use_ipv6 = <<SCRIPT
+    sed -i "s/^nameserver 8.8.8.8$/#nameserver 8.8.8.8/g" /etc/resolv.conf
+    sed -i "s/^nameserver 8.8.4.4$/#nameserver 8.8.4.4/g" /etc/resolv.conf
+SCRIPT
+
 run_docker_compose = <<SCRIPT
     cd /vagrant
     docker-compose down
@@ -70,6 +75,7 @@ Vagrant.configure("2") do |config|
 #    rsync__args: ["--verbose", "--archive", "--delete", "--copy-links"]
 
   config.vm.provision :shell, :inline => latest_docker_install_script
+  config.vm.provision :shell, :inline => fix_dns_use_ipv6
   config.vm.provision :shell, :inline => set_environment_variables, run: "always"
   config.vm.provision :shell, :inline => run_docker_compose, run: "always"
 end
