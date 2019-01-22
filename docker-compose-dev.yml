@@ -41,16 +41,16 @@ services:
       args:
         ##### CODE_VERSION avaiable value: latest, alpine-latest
         CODE_VERSION: latest
+        ##### if set will do git reset --hard $GIT_RESET(origin/master; origin/master src; adfca5d; tags/3.0.10) #####
+        ##### , others do git checkout $GIT_CHECKOUT #####
+        GIT_RESET: origin/master
+        ##### if set and $GIT_RESET is null will do git checkout $GIT_CHECKOUT(origin/master; origin/master src; adfca5d; tags/3.0.10) #####
+        GIT_CHECKOUT: origin/master
     image: php-nginx-dev:latest
     links:
       - db
     environment:
       - MYSQL_DB_HOST=db
-      ##### if set will do git reset --hard $GIT_RESET(origin/master; origin/master src; adfca5d; tags/3.0.10) #####
-      ##### , others do git checkout $GIT_CHECKOUT #####
-      - GIT_RESET=origin/master
-      ##### if set and $GIT_RESET is null will do git checkout $GIT_CHECKOUT(origin/master; origin/master src; adfca5d; tags/3.0.10) #####
-      - GIT_CHECKOUT=origin/master
       - LC_ALL=en_US                    ##### locale only used for alpine OS #####
       - VIRTUAL_HOST=dev.localtest.me   ##### need modify  #####
       - VIRTUAL_PROTO=fastcgi
@@ -60,15 +60,11 @@ services:
 #      - ENABLE_HSTS=true
 #      - ENABLE_ACME=true                ##### letsencrypt setting
     volumes:
-      - ./content/:/var/www/CRM/src         ##### php code
-      - ./source:/var/www/source            ##### php code for first time sync, after sync need disable this
-      - ./sync.sh:/var/www/sync.sh
-#      - ./source/CRM:/var/www/CRM           ##### debug code used after sync
-      - content-dev:/var/www                ##### builded code update volume
+      - ./content/:/var/www/CRM           ##### code
       - ./setting/php-dev/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini:ro
       - ./setting/php-dev/crmsetup:/usr/local/prechk
-      - ./secrets/BuildConfig.json:/var/www/CRM/BuildConfig.json    ##### need modify  #####
+      - ./secrets/BuildConfig.json:/var/www/BuildConfig.json    ##### need modify  #####
       - ./log/php-dev:/usr/local/var/log    #### debug use.
     secrets:
       - crm_secrets
@@ -84,4 +80,3 @@ secrets:
 volumes:
   db-dev-volume: null
   dhparam-volume: null
-  content-dev: null
