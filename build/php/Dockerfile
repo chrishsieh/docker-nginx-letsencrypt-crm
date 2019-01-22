@@ -26,7 +26,9 @@ RUN if [ "$IMG_VERSION" != "php-fpm" ]; then \
     chmod +x ./travis-ci/*.sh && \
     chmod +x ./scripts/*.sh && \
     cp BuildConfig.json.example BuildConfig.json && \
-    npm install --unsafe-perm --no-bin-links && \
+    npm config set unsafe-perm true && \
+    npm config set bin-links false && \
+    npm install && \
     npm audit fix && \
     npm run composer-update && \
     npm run composer-install && \
