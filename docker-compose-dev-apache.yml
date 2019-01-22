@@ -17,10 +17,7 @@ services:
         IMG_VERSION: php-apache-dev
         CODE_VERSION: latest
         CMD_STRING: apache2-foreground
-        ##### if set will do git reset --hard $GIT_RESET(origin/master; origin/master src; adfca5d; tags/3.0.10) #####
-        ##### , others do git checkout $GIT_CHECKOUT #####
-        GIT_RESET: origin/master
-        ##### if set and $GIT_RESET is null will do git checkout $GIT_CHECKOUT(origin/master; origin/master src; adfca5d; tags/3.0.10) #####
+        ##### do git checkout $GIT_CHECKOUT(origin/master; origin/master src; adfca5d; tags/3.0.10) #####
         GIT_CHECKOUT: origin/master
     image: php-apache-dev:latest
     links:

@@ -2,7 +2,6 @@ ARG  IMG_VERSION=php-fpm-dev
 ARG  CODE_VERSION=latest
 FROM chrishsieh/${IMG_VERSION}:${CODE_VERSION}
 ARG  CMD_STRING
-ARG  GIT_RESET
 ARG  GIT_CHECKOUT
 
 # Set work directory to the web host path
@@ -16,14 +15,9 @@ RUN if [ "$IMG_VERSION" != "php-fpm" ]; then \
     git clone https://github.com/ChurchCRM/CRM.git source && \
     cd source && \
     git fetch --all && \
-    if [ -z "${GIT_RESET}" ]; then \
-        if ! [ -z "${GIT_CHECKOUT}" ]; then \
-            echo "git checkout ${GIT_CHECKOUT}" \
-            git checkout $GIT_CHECKOUT; \
-        fi \
-    else \
-        echo "git reset --hard ${GIT_RESET}" \
-        git reset --hard $GIT_RESET; \
+    if ! [ -z "${GIT_CHECKOUT}" ]; then \
+        echo "git checkout ${GIT_CHECKOUT}"; \
+        git checkout $GIT_CHECKOUT; \
     fi; \
     chmod +x ./travis-ci/*.sh && \
     chmod +x ./scripts/*.sh && \
