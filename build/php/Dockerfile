@@ -8,6 +8,8 @@ ARG  GIT_CHECKOUT
 # Set work directory to the web host path
 WORKDIR /var/www
 
+COPY ./php.ini /usr/local/etc/php/
+
 RUN if [ "$IMG_VERSION" != "php-fpm" ]; then \
     npm install grunt-cli i18next-extract-gettext github-release-notes -g && \
     echo "alias ls='ls --color=auto'" >> ~/.bashrc && \
@@ -37,7 +39,6 @@ RUN if [ "$IMG_VERSION" != "php-fpm" ]; then \
     chown -R www-data:www-data /var/www/source; \
     fi
 
-COPY ./php.ini /usr/local/etc/php/
 RUN touch ~/run_cmd && chmod 777 ~/run_cmd && echo ${CMD_STRING:-php-fpm} > ~/run_cmd
 # Run the configsetup file on container start
 ENTRYPOINT ["/usr/local/bin/presetup"]
