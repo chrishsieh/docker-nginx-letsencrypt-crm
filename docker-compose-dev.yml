@@ -61,6 +61,8 @@ services:
 #      - ENABLE_ACME=true                ##### letsencrypt setting
     volumes:
       - ./content/:/var/www/CRM/src         ##### php code
+      - ./source:/var/www/source            ##### php code for read
+      - ./sync.sh:/var/www/sync.sh
       - content-dev:/var/www                ##### builded code update volume
       - ./setting/php-dev/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini:ro
