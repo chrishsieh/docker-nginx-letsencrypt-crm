@@ -1,12 +1,23 @@
 #!/bin/sh
-if ! [ -f /var/www/CRM/done.touch ]; then
-    cd /var/www/source
-    rsync -aL --delete . /var/www/CRM
-    touch /var/www/CRM/done.touch
-    chown -R www-data:www-data /var/www/CRM
-fi
 
 cp /var/www/BuildConfig.json /var/www/CRM/BuildConfig.json
+
+if ! [ -f /var/www/CRM/src/index.php ]; then
+    cd CRM && \
+    git fetch --all
+    if ! [ -z "${GIT_CHECKOUT}" ]; then
+        echo "git checkout ${GIT_CHECKOUT}";
+        git checkout $GIT_CHECKOUT;
+    fi;
+    chmod +x ./travis-ci/*.sh && \
+    chmod +x ./scripts/*.sh
+    chown -R www-data:www-data /var/www/CRM
+    yarn install --no-bin-links
+    yarn run composer-install
+    yarn run orm-gen
+    yarn run update-signatures
+    chown -R www-data:www-data /var/www/CRM
+fi
 
 if ! [ -f /var/www/CRM/src/Include/Config.php ]; then
     cp /var/www/CRM/src/Include/Config.php.example /var/www/CRM/src/Include/Config.php

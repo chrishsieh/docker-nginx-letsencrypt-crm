@@ -6,26 +6,27 @@
 ## Vagrant version
 Vagrant.require_version ">= 1.7.4"
 
-$forwarded_ports = { 80 => 80, 443 => 443 }
+$forwarded_ports = { 80 => 80, 443 => 443, 5000 => 5000 }
 
 # Make sure the vagrant-ignition plugin is installed
 #required_plugins = %w{ vagrant-winnfsd }
+required_plugins = %w{ }
 
-#plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
-#if not plugins_to_install.empty?
-#  puts "Installing plugins: #{plugins_to_install.join(' ')}"
-#  if system "vagrant plugin install #{plugins_to_install.join(' ')}"
-#    exec "vagrant #{ARGV.join(' ')}"
-#  else
-#    abort "Installation of one or more plugins has failed. Aborting."
-#  end
-#end
+plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
+if not plugins_to_install.empty?
+  puts "Installing plugins: #{plugins_to_install.join(' ')}"
+  if system "vagrant plugin install #{plugins_to_install.join(' ')}"
+    exec "vagrant #{ARGV.join(' ')}"
+  else
+    abort "Installation of one or more plugins has failed. Aborting."
+  end
+end
 
 set_environment_variables = <<SCRIPT
     tee "/etc/profile.d/myvars.sh" > "/dev/null" <<EOF
 # environment variables.
 # change default docker-compose load file name
-export COMPOSE_FILE=docker-compose.yml
+export COMPOSE_FILE=docker-compose-dev-apache.yml
 alias dc='docker-compose'
 EOF
 SCRIPT
@@ -72,7 +73,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 1024
+    v.memory = 2048
     v.cpus = 2
   end
 
@@ -80,9 +81,12 @@ Vagrant.configure("2") do |config|
 
 # for NFS synced folder
 #  config.vm.network "private_network", ip: "192.168.33.10"
-#  config.vm.synced_folder ".", "/vagrant", type: "nfs",
+#  config.vm.synced_folder "../nfs", "/nfs", type: "nfs",
 #    disabled: false, create: true,
+#   19m
 #    mount_options: ["nolock", "vers=3", "udp", "noatime", "actimeo=1"]
+#   12m
+#    mount_options: ["nolock", "vers=3", "udp", "noatime", "actimeo=120", "noacl", "nocto", "rsize=32768", "wsize=32768"]
 
 #  for RSync synced folder
 #  config.vm.synced_folder ".", "/vagrant", type: "rsync",

@@ -17,28 +17,29 @@ services:
         IMG_VERSION: php-apache-dev
         CODE_VERSION: latest
         CMD_STRING: apache2-foreground
-        ##### do git checkout $GIT_CHECKOUT(origin/master; origin/master src; adfca5d; tags/3.0.10) #####
-        GIT_CHECKOUT: origin/master
     image: php-apache-dev:latest
     links:
       - db
     environment:
-      - MYSQL_DB_HOST=db
-      - VIRTUAL_HOST=dev.localtest.me   ##### need modify  #####
-      - VIRTUAL_ROOT=/var/www/CRM/src
-#      - ENABLE_HSTS=true
-#      - ENABLE_ACME=true               ##### letsencrypt setting
+      ##### do git checkout $GIT_CHECKOUT(origin/master; origin/master src; adfca5d; tags/3.0.10) #####
+      GIT_CHECKOUT: -b master origin/master
+      MYSQL_DB_HOST: db
+      VIRTUAL_HOST: dev.localtest.me   ##### need modify  #####
+      VIRTUAL_ROOT: /var/www/CRM/src
+#      ENABLE_HSTS: true
+#      ENABLE_ACME: true               ##### letsencrypt setting
     volumes:
-      - ./content/:/var/www/CRM           ##### code
-      - ./keys/acme/:/acmecerts          #acme.sh install folder
-      - ./keys/certs/:/etc/apache2/certs     #certs folder
+      - code:/var/www/CRM                     ##### code
+      - ./keys/acme/:/acmecerts               #acme.sh install folder
+      - ./keys/certs/:/etc/apache2/certs      #certs folder
       - ./setting/php-apache-dev/www.conf:/etc/apache2/sites-available/www.conf:ro
       - ./setting/php-apache-dev/ssl.conf:/etc/apache2/sites-available/ssl.conf:ro
+      - ./setting/php-apache-dev/php.ini:/usr/local/etc/php/php.ini:ro
       - ./setting/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini:ro
       - ./setting/php-apache-dev/crmsetup:/usr/local/prechk
       - ./setting/php-apache-dev/app/:/app
       - ./secrets/BuildConfig.json:/var/www/BuildConfig.json    ##### need modify  #####
-      - ./log/php-dev/:/usr/local/var/log    #debug use.
+      - ./log/php-dev/:/usr/local/var/log     #debug use.
  #      - ./setting/nginx/dns_dynu.sh:/acme.sh/dnsapi/dns_dynu.sh   # fix dynu.sh issue
     ports:
       - "80:80"
@@ -47,6 +48,16 @@ services:
       - crm_secrets
       - ssl
 #      - dns_api
+
+  unison:
+    container_name: unison
+    image: eugenmayer/unison:2.51.2.1
+    command: sh -c "chown -R xfs:xfs /unison && cd /unison && unison -socket 5000 >>/var/log/unison.log 2>&1"
+    volumes:
+      - code:/unison
+    ports:
+      - "5000:5000"
+
 secrets:
   crm_secrets:
     file: ./secrets/crm_sql_secrets.json
@@ -57,3 +68,4 @@ secrets:
 
 volumes:
   db-dev-volume: null
+  code: null
