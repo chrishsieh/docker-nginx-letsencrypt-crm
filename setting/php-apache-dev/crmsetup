@@ -13,23 +13,31 @@ a2enmod ssl
 a2ensite ChurchCRM-ssl.conf
 a2enmod rewrite
 
-cp /var/www/BuildConfig.json /var/www/CRM/BuildConfig.json
+echo "alias ls='ls --color=auto'" >> ~/.bashrc
+source ~/.bashrc
 
-if ! [ -f /var/www/CRM/src/index.php ]; then
-    cd CRM && \
+if ! [ -d /var/www/CRM/ ]; then
+    git clone https://github.com/ChurchCRM/CRM.git CRM
+    cp /var/BuildConfig.json /var/www/CRM/BuildConfig.json
+    chown -R www-data:www-data /var/www/CRM
+fi
+
+if ! [ -f /var/www/CRM/fetch.done ]; then
+    cd CRM
     git fetch --all
     if ! [ -z "${GIT_CHECKOUT}" ]; then
         echo "git checkout ${GIT_CHECKOUT}";
         git checkout $GIT_CHECKOUT;
-    fi;
-    chmod +x ./travis-ci/*.sh && \
+    fi
+    chmod +x ./travis-ci/*.sh
     chmod +x ./scripts/*.sh
-    chown -R www-data:www-data /var/www/CRM
+    yarn add grunt-cli i18next-extract-gettext github-release-notes webpack webpack-cli -D
     yarn install --no-bin-links
     yarn run composer-install
     yarn run orm-gen
     yarn run update-signatures
     chown -R www-data:www-data /var/www/CRM
+    touch /var/www/CRM/fetch.done
 fi
 
 if ! [ -f /var/www/CRM/src/Include/Config.php ]; then

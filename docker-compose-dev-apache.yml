@@ -1,23 +1,30 @@
 version: '3.5'
 services:
+  #### db use mysql as database
   db:
     container_name: db
     image: chrishsieh/mysql:latest
     volumes:
+      #### database saved volume
       - db-dev-volume:/var/lib/mysql
+      #### pre-script before service start, init CRM database
       - ./setting/sql/sql_setup:/usr/local/prechk
     secrets:
+      #### database secret setting
       - crm_secrets
 
+  #### php run php and apache serivces
   php:
     container_name: php
-    build:
-      context: ./build/php
-      args:
-        IMG_VERSION: php-apache-dev
-        CODE_VERSION: latest
-        CMD_STRING: apache2-foreground
-    image: php-apache-dev:latest
+    #### build add global node install
+#    build:
+#      context: ./build/php
+#      args:
+#        IMG_VERSION: php-apache-dev
+#        CODE_VERSION: latest
+#        CMD_STRING: apache2-foreground
+#        CMD_SHELL: /bin/bash
+    image: chrishsieh/php-apache-dev:latest
     links:
       - db
     environment:
@@ -29,17 +36,27 @@ services:
 #      ENABLE_HSTS: true
 #      ENABLE_ACME: true               ##### letsencrypt setting
     volumes:
-      - code:/var/www/CRM                     ##### code
+      #### code
+      - code:/var/www
+      #### certs
       - ./keys/acme/:/acmecerts               #acme.sh install folder
       - ./keys/certs/:/etc/apache2/certs      #certs folder
+      #### apache setting
       - ./setting/php-apache-dev/www.conf:/etc/apache2/sites-available/www.conf:ro
       - ./setting/php-apache-dev/ssl.conf:/etc/apache2/sites-available/ssl.conf:ro
+      #### php setting
       - ./setting/php-apache-dev/php.ini:/usr/local/etc/php/php.ini:ro
+      #### xdebug setting
       - ./setting/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini:ro
+      #### pre-script before service start, setting CRM
       - ./setting/php-apache-dev/crmsetup:/usr/local/prechk
+      #### pre-script before service start, setting certs
       - ./setting/php-apache-dev/app/:/app
-      - ./secrets/BuildConfig.json:/var/www/BuildConfig.json    ##### need modify  #####
+      #### CRM buildConfig setting
+      - ./secrets/BuildConfig.json:/var/BuildConfig.json    ##### need modify  #####
+      #### php log file
       - ./log/php-dev/:/usr/local/var/log     #debug use.
+      #### others
  #      - ./setting/nginx/dns_dynu.sh:/acme.sh/dnsapi/dns_dynu.sh   # fix dynu.sh issue
     ports:
       - "80:80"
@@ -49,8 +66,10 @@ services:
       - ssl
 #      - dns_api
 
+  #### unison used for sync code to windows host
   unison:
     container_name: unison
+    #### version need same as windows unison version.
     image: eugenmayer/unison:2.51.2.1
     command: sh -c "chown -R xfs:xfs /unison && cd /unison && unison -socket 5000 >>/var/log/unison.log 2>&1"
     volumes:
@@ -59,13 +78,18 @@ services:
       - "5000:5000"
 
 secrets:
+  #### database secret setting
   crm_secrets:
     file: ./secrets/crm_sql_secrets.json
+  #### for DNS server auto api setting.
 #  dns_api:
 #    file: ./secrets/dns_api.json           ##### need modify  #####
+  #### cert setting.
   ssl:
     file: ./secrets/ssl-dev.json            ##### need modify  #####
 
 volumes:
+  #### database data volume
   db-dev-volume: null
+  #### code volume used for sync
   code: null
