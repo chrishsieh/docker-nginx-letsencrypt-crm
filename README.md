@@ -11,7 +11,7 @@
   >1. Run "vagrant up".
   >1. ~~For develop use software-link support, need run vagrant up in administrator.(https://github.com/winnfsd/vagrant-winnfsd/issues/66)~~
   >1. Recommand use putty to connect. reference https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY. ~~If use vscode can use SSHExtension to open ssh terminal.~~
-  >1. vagrant will auto run docker-compose up -d, ssh to vagrant machine, /vagrant run "docker-compose logs check status.
+  >1. vagrant will auto run docker-compose up -d, vagrant ssh to vagrant machine, /vagrant run "docker-compose logs check status.
 
 ## Version note
 1. Use vagrant_setting.ps1 to select different version.
@@ -35,8 +35,10 @@
 - If switch different image, need run docker-compose build --pull.
 - First time docker-compose will build php-dev image. others had pre-build as image. The image file system is readonly.
 - ~~default docker-compose use docker-compose-dev.yml in vagrant, can be change in Vagrantfile.~~
-- Volume mapping CRM source code /var/www/CRM to docker local volume to keep modify, /var/www/CRM/src mapping to windows ./content, so can use windows editor to edit php code.
+- Volume mapping CRM source at /var/www/CRM, windows mapping to ../CRM_sync, use unison to sync, in windows run run_unison.ps1 to sync, can modify the mark line to auto sync. ~~Volume mapping CRM source code /var/www/CRM to docker local volume to keep modify, /var/www/CRM/src mapping to windows ./content, so can use windows editor to edit php code.~~
 - After connect to vagrant, switch to /vagrant folder, can use docker-compose command.
+- At VM /vagrant do command dc exec php bash can swith to php service to run node command.
+- This version use yarn to replace npm command.
 - Had add alias dc to docker-compose.
   >- dc up -d: run all services.
   >- dc down: stop and remove all services
