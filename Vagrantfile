@@ -48,6 +48,13 @@ fix_dns_use_ipv6 = <<SCRIPT
     sed -i "s/^nameserver 8.8.4.4$/#nameserver 8.8.4.4/g" /etc/resolv.conf
 SCRIPT
 
+max_inotify = <<SCRIPT
+    echo "net.ipv4.ip_forward=1" > /etc/sysctl.conf
+    echo "net.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf
+    echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf
+    sysctl -p||true
+SCRIPT
+
 run_docker_compose = <<SCRIPT
     cd /vagrant
     docker-compose down
@@ -96,6 +103,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :shell, :inline => latest_docker_install_script
   config.vm.provision :shell, :inline => fix_dns_use_ipv6
+  config.vm.provision :shell, :inline => max_inotify
   config.vm.provision :shell, :inline => set_environment_variables, run: "always"
   config.vm.provision :shell, :inline => run_docker_compose, run: "always"
 end
