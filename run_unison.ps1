@@ -26,4 +26,5 @@ if (! ( Test-Path "$PSScriptRoot\..\CRM_sync" -ne 1 ) ) {
     mkdir ../CRM_sync
 }
 
-unison.exe ../CRM_sync socket://127.0.0.1:5000/ -perms=0 -auto -numericids -batch -maxerrors 10 -repeat watch -silent
+.\unison.exe ../CRM_sync socket://127.0.0.1:5000/ -perms=0 -auto -numericids -batch
+#.\unison.exe ../CRM_sync socket://127.0.0.1:5000/ -perms=0 -auto -numericids -batch -maxerrors 10 -repeat watch -silent

@@ -19,9 +19,11 @@ rm -f /var/www/sync.done || true
 
 if ! [ -d /var/www/CRM/ ]; then
     git clone https://github.com/ChurchCRM/CRM.git CRM
-    cp /var/BuildConfig.json /var/www/CRM/BuildConfig.json
     chown -R www-data:www-data /var/www/CRM
 fi
+
+cp /var/BuildConfig.json /var/www/CRM/BuildConfig.json
+chown www-data:www-data /var/www/CRM/BuildConfig.json
 
 if ! [ -f /var/www/CRM/fetch.done ]; then
     cd CRM
@@ -37,9 +39,10 @@ if ! [ -f /var/www/CRM/fetch.done ]; then
     yarn run composer-install
     yarn run orm-gen
     yarn run update-signatures
-    chown -R www-data:www-data /var/www/CRM
-    touch /var/www/CRM/fetch.done
 fi
+
+chown -R www-data:www-data /var/www/CRM
+touch /var/www/CRM/fetch.done
 
 if ! [ -f /var/www/CRM/src/Include/Config.php ]; then
     cp /var/www/CRM/src/Include/Config.php.example /var/www/CRM/src/Include/Config.php
