@@ -1,23 +1,33 @@
-#!/bin/sh
+echo "alias ls='ls --color=auto'" >> ~/.bashrc
+source ~/.bashrc
+rm -f /var/www/sync.done || true
 
-cp /var/www/BuildConfig.json /var/www/CRM/BuildConfig.json
+if ! [ -d /var/www/CRM/ ]; then
+    git clone https://github.com/ChurchCRM/CRM.git CRM
+    chown -R www-data:www-data /var/www/CRM
+fi
 
-if ! [ -f /var/www/CRM/src/index.php ]; then
-    cd CRM && \
+cp /var/BuildConfig.json /var/www/CRM/BuildConfig.json
+chown www-data:www-data /var/www/CRM/BuildConfig.json
+
+if ! [ -f /var/www/CRM/fetch.done ]; then
+    cd CRM
     git fetch --all
     if ! [ -z "${GIT_CHECKOUT}" ]; then
         echo "git checkout ${GIT_CHECKOUT}";
         git checkout $GIT_CHECKOUT;
-    fi;
-    chmod +x ./travis-ci/*.sh && \
+    fi
+    chmod +x ./travis-ci/*.sh
     chmod +x ./scripts/*.sh
-    chown -R www-data:www-data /var/www/CRM
-    yarn install --no-bin-links
+    yarn add grunt-cli i18next-extract-gettext github-release-notes webpack webpack-cli typescript ts-loader -D
+    yarn install
     yarn run composer-install
     yarn run orm-gen
     yarn run update-signatures
-    chown -R www-data:www-data /var/www/CRM
 fi
+
+chown -R www-data:www-data /var/www/CRM
+touch /var/www/CRM/fetch.done
 
 if ! [ -f /var/www/CRM/src/Include/Config.php ]; then
     cp /var/www/CRM/src/Include/Config.php.example /var/www/CRM/src/Include/Config.php
@@ -49,3 +59,5 @@ if ! [ -f /var/www/CRM/src/Include/Config.php ]; then
     sed -i "s/||URL||//g" /var/www/CRM/src/Include/Config.php
     sed -i "s/||ROOT_PATH||//g" /var/www/CRM/src/Include/Config.php
 fi
+
+touch /var/www/sync.done

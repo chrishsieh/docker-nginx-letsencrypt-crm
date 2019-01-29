@@ -16,14 +16,6 @@ services:
   #### php run php and apache serivces
   php:
     container_name: php
-    #### build add global node install
-#    build:
-#      context: ./build/php
-#      args:
-#        IMG_VERSION: php-apache-dev
-#        CODE_VERSION: latest
-#        CMD_STRING: apache2-foreground
-#        CMD_SHELL: /bin/bash
     image: chrishsieh/php-apache-dev:latest
     links:
       - db
