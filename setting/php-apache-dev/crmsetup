@@ -15,6 +15,7 @@ a2enmod rewrite
 
 echo "alias ls='ls --color=auto'" >> ~/.bashrc
 source ~/.bashrc
+rm -f /var/www/sync.done || true
 
 if ! [ -d /var/www/CRM/ ]; then
     git clone https://github.com/ChurchCRM/CRM.git CRM
@@ -31,7 +32,7 @@ if ! [ -f /var/www/CRM/fetch.done ]; then
     fi
     chmod +x ./travis-ci/*.sh
     chmod +x ./scripts/*.sh
-    yarn add grunt-cli i18next-extract-gettext github-release-notes webpack webpack-cli -D
+    yarn add grunt-cli i18next-extract-gettext github-release-notes webpack webpack-cli typescript ts-loader -D
     yarn install --no-bin-links
     yarn run composer-install
     yarn run orm-gen
@@ -70,3 +71,5 @@ if ! [ -f /var/www/CRM/src/Include/Config.php ]; then
     sed -i "s/||URL||//g" /var/www/CRM/src/Include/Config.php
     sed -i "s/||ROOT_PATH||//g" /var/www/CRM/src/Include/Config.php
 fi
+
+touch /var/www/sync.done
