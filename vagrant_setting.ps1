@@ -8,10 +8,8 @@ if ($Dev -eq "yes") {
 	if ( $ServerType -ne "apache" ) { $ServerType = "nginx"}
 
 	if ( $ServerType -eq "nginx" ) {
-		#$OSType = Read-Host -Prompt 'Input OS type(debian or alpine)'
-		#if ( $OSType -ne "alpine" ) { $OSType = "debian"}
-		# alpine have some issue so disable it.
-		$OSType = "debian"
+		$OSType = Read-Host -Prompt 'Input OS type(debian or alpine)'
+		if ( $OSType -ne "alpine" ) { $OSType = "debian"}
 		$Docker_Compose_file = "docker-compose-dev.yml"
 		if ( $OSType -eq "alpine" ) { $Build_Code_Version = 'alpine-latest'}
 	}
@@ -19,11 +17,19 @@ if ($Dev -eq "yes") {
 		$Docker_Compose_file = "docker-compose-dev-apache.yml"
 	}
 
+	$replace_file = ".\$Docker_Compose_file"
+
 	if ( $ServerType -eq "nginx" ) {
-		$replace_file = ".\$Docker_Compose_file"
 		(Get-Content $replace_file) -replace ("image: chrishsieh/php-fpm-dev:(.*)$", "image: chrishsieh/php-fpm-dev:$Build_Code_Version") | Out-File -encoding ASCII $replace_file
-		Write-Host "$Docker_Compose_file updated"
 	}
+
+	if ( $OSType -eq "alpine") {
+		(Get-Content $replace_file) -replace ("OWNER_UID: (.*)$", "OWNER_UID: 82") | Out-File -encoding ASCII $replace_file
+	} else {
+		(Get-Content $replace_file) -replace ("OWNER_UID: (.*)$", "OWNER_UID: 33") | Out-File -encoding ASCII $replace_file
+	}
+	Write-Host "$Docker_Compose_file updated"
+
 	Write-Host "Getting Host IP ..."
 	.\replace_xdebug_host_ip.ps1
 	Write-Host "xdebug.ini updated"

@@ -1,5 +1,7 @@
+source /etc/os-release
+
 echo "alias ls='ls --color=auto'" >> ~/.bashrc
-source ~/.bashrc
+source ~/.bashrc || true
 rm -f /var/www/sync.done || true
 
 if ! [ -d /var/www/CRM/ ]; then
@@ -19,11 +21,24 @@ if ! [ -f /var/www/CRM/fetch.done ]; then
     fi
     chmod +x ./travis-ci/*.sh
     chmod +x ./scripts/*.sh
-    yarn add grunt-cli i18next-extract-gettext github-release-notes webpack webpack-cli typescript ts-loader -D
-    yarn install
-    yarn run composer-install
-    yarn run orm-gen
-    yarn run update-signatures
+
+    if [ "${NAME}" == "Alpine Linux" ]; then
+        rm yarn.lock
+        npm install --unsafe-perm grunt-cli i18next-extract-gettext github-release-notes detect-libc lightercollective webpack webpack-cli typescript ts-loader --save-dev
+        npm install --unsafe-perm
+        npm run composer-update
+        npm run composer-install
+        npm run orm-gen
+        npm run update-signatures
+    else
+        rm package-lock.json
+        yarn add grunt-cli i18next-extract-gettext github-release-notes webpack webpack-cli typescript ts-loader -D
+        yarn install
+        yarn run composer-update
+        yarn run composer-install
+        yarn run orm-gen
+        yarn run update-signatures
+    fi
 fi
 
 chown -R www-data:www-data /var/www/CRM

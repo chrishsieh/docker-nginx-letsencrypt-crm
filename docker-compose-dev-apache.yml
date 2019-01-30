@@ -63,7 +63,18 @@ services:
     container_name: unison
     #### version need same as windows unison version.
     image: eugenmayer/unison:2.51.2.1
-    command: sh -c "chown -R xfs:xfs /unison && cd /unison && unison -socket 5000 >>/var/log/unison.log 2>&1"
+    depends_on:
+      - php
+    command: "/entrypoint.sh supervisord"
+    environment:
+      APP_VOLUME: "/unison"
+      UNISON_ARGS: "-socket 5000"
+      OWNER_UID: 33
+      UNISON_WATCH_ARGS: ""
+      UNISON_SRC: ""
+      UNISON_DEST: ""
+      HOST_VOLUME: ""
+      MONIT_ENABLE: "false"
     volumes:
       - code:/unison
     ports:

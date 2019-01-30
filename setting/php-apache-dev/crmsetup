@@ -34,8 +34,11 @@ if ! [ -f /var/www/CRM/fetch.done ]; then
     fi
     chmod +x ./travis-ci/*.sh
     chmod +x ./scripts/*.sh
+
+    rm package-lock.json
     yarn add grunt-cli i18next-extract-gettext github-release-notes webpack webpack-cli typescript ts-loader -D
-    yarn install --no-bin-links
+    yarn install
+    yarn run composer-update
     yarn run composer-install
     yarn run orm-gen
     yarn run update-signatures
