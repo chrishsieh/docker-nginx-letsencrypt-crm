@@ -56,7 +56,7 @@ services:
     networks:
       default:
         aliases:
-         - dev.localtest.me
+          - dev.localtest.me
     secrets:
       - crm_secrets
       - ssl
@@ -67,8 +67,6 @@ services:
     container_name: unison
     #### version need same as windows unison version.
     image: eugenmayer/unison:2.51.2.1
-    depends_on:
-      - php
     command: "/entrypoint.sh supervisord"
     environment:
       APP_VOLUME: "/unison"
@@ -83,23 +81,7 @@ services:
       - code:/unison
     ports:
       - "5000:5000"
-
-  #### selenium used for web access
-  selenium:
-    container_name: selenium
-    image: selenium/standalone-chrome
-    volumes:
-      - /dev/shm:/dev/shm
-    ports:
-      - "4444:4444"
-
-  #### node_test used for auto test with node
-  test:
-    container_name: test
-    image: chrishsieh/node_test_web_driver
-    command: npm test -- --hostname=selenium --baseUrl=http://dev.localtest.me
-    volumes:
-      - ./test/specs:/app/test/specs
+    restart: on-failure
 
 secrets:
   #### database secret setting
