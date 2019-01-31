@@ -23,7 +23,7 @@ if not plugins_to_install.empty?
 end
 
 set_environment_variables = <<SCRIPT
-    tee "/etc/profile.d/myvars.sh" > "/dev/null" <<EOF
+  cat << EOF > /etc/profile.d/myvars.sh
 # environment variables.
 # change default docker-compose load file name
 export COMPOSE_FILE=docker-compose-dev-apache.yml
@@ -32,34 +32,45 @@ EOF
 SCRIPT
 
 latest_docker_install_script = <<SCRIPT
-    DOCKER_VERSION=18.06.1-ce
-    DOCKER_COMPOSE_VERSION=1.23.2
+  DOCKER_VERSION=18.06.1-ce
+  DOCKER_COMPOSE_VERSION=1.23.2
 
-    docker version
-    /etc/init.d/docker restart $DOCKER_VERSION
-    wget -q -L https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m`
-    mv docker-compose-`uname -s`-`uname -m` /opt/bin/docker-compose
-    chmod +x /opt/bin/docker-compose
-    chown root:root /opt/bin/docker-compose
+  docker version
+  /etc/init.d/docker restart $DOCKER_VERSION
+  wget -q -L https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m`
+  mv docker-compose-`uname -s`-`uname -m` /opt/bin/docker-compose
+  chmod +x /opt/bin/docker-compose
+  chown root:root /opt/bin/docker-compose
 SCRIPT
 
 fix_dns_use_ipv6 = <<SCRIPT
-    sed -i "s/^nameserver 8.8.8.8$/#nameserver 8.8.8.8/g" /etc/resolv.conf
-    sed -i "s/^nameserver 8.8.4.4$/#nameserver 8.8.4.4/g" /etc/resolv.conf
+  sed -i "s/^nameserver 8.8.8.8$/#nameserver 8.8.8.8/g" /etc/resolv.conf
+  sed -i "s/^nameserver 8.8.4.4$/#nameserver 8.8.4.4/g" /etc/resolv.conf
 SCRIPT
 
 max_inotify = <<SCRIPT
-    echo "net.ipv4.ip_forward=1" > /etc/sysctl.conf
-    echo "net.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf
-    echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf
-    sysctl -p||true
+  cat << EOF > /etc/sysctl.conf
+net.ipv4.ip_forward=1
+net.ipv6.conf.all.forwarding=1
+fs.inotify.max_user_watches=524288
+EOF
+  sysctl -p||true
+SCRIPT
+
+ssh_path_init = <<SCRIPT
+  cat << EOF > /home/bargee/.bash_profile
+if [ -f "/home/bargee/.bashrc" ]; then
+  source "/home/bargee/.bashrc"
+fi
+cd /vagrant
+EOF
 SCRIPT
 
 run_docker_compose = <<SCRIPT
-    cd /vagrant
-    docker-compose down
-    time docker-compose build
-    docker-compose up -d
+  cd /vagrant
+  docker-compose down
+  time docker-compose build
+  docker-compose up -d
 SCRIPT
 
 module VagrantPlugins
@@ -102,6 +113,7 @@ Vagrant.configure("2") do |config|
 #    rsync__args: ["--verbose", "--archive", "--delete", "--copy-links"]
 
   config.vm.provision :shell, :inline => latest_docker_install_script
+  config.vm.provision :shell, :inline => ssh_path_init
   config.vm.provision :shell, :inline => fix_dns_use_ipv6
   config.vm.provision :shell, :inline => max_inotify
   config.vm.provision :shell, :inline => set_environment_variables, run: "always"
