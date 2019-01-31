@@ -22,6 +22,11 @@ services:
     restart: always
     secrets:
       - ssl
+    networks:
+      default:
+        #### setting for services call web server by host name
+        aliases:
+          - myapp.localtest.me
 
   php:
     container_name: php

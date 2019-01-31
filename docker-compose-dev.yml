@@ -25,6 +25,11 @@ services:
     secrets:
 #      - dns_api
       - ssl
+    networks:
+      default:
+        #### setting for services call web server by host name
+        aliases:
+          - dev.localtest.me
 
   #### db use mysql as database
   db:

@@ -23,6 +23,11 @@ services:
     secrets:
 #      - dns_api
       - ssl
+    networks:
+      default:
+        #### setting for services call web server by host name
+        aliases:
+          - myapp.localtest.me
 
   db:
     container_name: db

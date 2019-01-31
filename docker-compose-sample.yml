@@ -27,6 +27,14 @@ services:
       - dns_api
       - ssl
 #    network_mode: "host"
+    networks:
+      default:
+        #### setting for services call web server by host name
+        aliases:
+          - www.example.com
+          - www.example1.com
+          - myapp.localtest.me
+          - www.example2.com
 
   db:
     container_name: db
