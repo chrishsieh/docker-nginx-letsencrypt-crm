@@ -26,7 +26,7 @@ set_environment_variables = <<SCRIPT
   cat << EOF > /etc/profile.d/myvars.sh
 # environment variables.
 # change default docker-compose load file name
-export COMPOSE_FILE=docker-compose-dev-apache.yml
+export COMPOSE_FILE=docker-compose.yml
 alias dc='docker-compose'
 EOF
 SCRIPT
@@ -91,7 +91,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 2048
+    v.memory = 1024
     v.cpus = 2
   end
 
