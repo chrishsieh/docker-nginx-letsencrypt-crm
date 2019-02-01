@@ -8,6 +8,7 @@
 - Use Vagrant
   >1. Install VaitualBox and Vagrant.
   >1. Run vagrant_setting.ps1 to setting vagrant and xdebug ip.Can select nginx or apache, debian or alpine.
+  >1. Update .env setting.
   >1. Run "vagrant up".
   >1. ~~For develop use software-link support, need run vagrant up in administrator.(https://github.com/winnfsd/vagrant-winnfsd/issues/66)~~
   >1. Recommand use putty to connect. reference https://github.com/Varying-Vagrant-Vagrants/VVV/wiki/Connect-to-Your-Vagrant-Virtual-Machine-with-PuTTY. ~~If use vscode can use SSHExtension to open ssh terminal.~~
@@ -19,6 +20,7 @@
 1. For development multi web sites, use nginx, if only use en_US locale can use alpine OS for small size, others use debian OS.
 
 ## Install
+1. Update .env setting.
 1. docker-compose build
 1. docker-compose up -d, wait ChurchCRM install.
 1. https://myapp.localtest.me, *.localtest.me ip is 127.0.0.1, no need to change hosts file, default user is admin, password is changeme.
