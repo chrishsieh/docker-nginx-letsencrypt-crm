@@ -82,6 +82,12 @@ services:
     secrets:
       - crm_secrets
 
+  mailcatcher:
+    container_name: mailcatcher
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+
   #### unison used for sync code to windows host
   unison:
     container_name: unison
@@ -103,6 +109,13 @@ services:
       - code:/unison
     ports:
       - "5000:5000"
+
+  #### selenium used for web access
+  selenium:
+    container_name: selenium
+    image: selenium/standalone-chrome
+    volumes:
+      - /dev/shm:/dev/shm
 
 secrets:
   #### database secret setting

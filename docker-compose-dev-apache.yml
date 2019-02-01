@@ -61,6 +61,12 @@ services:
       - ssl
       - dns_api
 
+  mailcatcher:
+    container_name: mailcatcher
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+
   #### unison used for sync code to windows host
   unison:
     container_name: unison
