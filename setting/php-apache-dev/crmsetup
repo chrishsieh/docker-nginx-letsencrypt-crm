@@ -28,9 +28,9 @@ chown www-data:www-data /var/www/CRM/BuildConfig.json
 if ! [ -f /var/www/CRM/fetch.done ]; then
     cd CRM
     git fetch --all
-    if ! [ -z "${GIT_CHECKOUT}" ]; then
-        echo "git checkout ${GIT_CHECKOUT}";
-        git checkout $GIT_CHECKOUT;
+    if ! [ -z "${GIT_CMD}" ]; then
+        echo "git ${GIT_CMD}";
+        git $GIT_CMD;
     fi
     chmod +x ./travis-ci/*.sh
     chmod +x ./scripts/*.sh

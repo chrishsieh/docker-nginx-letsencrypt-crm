@@ -1,18 +1,9 @@
 version: '3.5'
 services:
-  #### selenium used for web access
-  selenium:
-    container_name: selenium
-    image: selenium/standalone-chrome
-    volumes:
-      - /dev/shm:/dev/shm
-
   #### node_test used for auto test with node
   test:
     container_name: test
     image: chrishsieh/node_test_web_driver
-    depends_on:
-      - selenium
-    command: npm test -- --hostname=selenium --baseUrl=http://dev.localtest.me
+    command: npm test -- --hostname=selenium --baseUrl=http://${_DEV_VIRTUAL_HOST:-dev.localtest.me}
     volumes:
       - ./test/specs:/app/test/specs

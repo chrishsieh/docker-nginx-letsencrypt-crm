@@ -20,19 +20,19 @@ services:
     links:
       - db
     environment:
-      ##### do git checkout $GIT_CHECKOUT(origin/master; origin/master src; adfca5d; tags/3.0.10) #####
-      GIT_CHECKOUT: -b master origin/master
+      ##### do git ${_GIT_CMD} #####
+      GIT_CMD: ${_DEV_GIT_CMD:-master}
       MYSQL_DB_HOST: db
-      VIRTUAL_HOST: dev.localtest.me   ##### need modify  #####
+      VIRTUAL_HOST: ${_DEV_VIRTUAL_HOST:-dev.localtest.me}   ##### need modify  #####
       VIRTUAL_ROOT: /var/www/CRM/src
-#      ENABLE_HSTS: true
-#      ENABLE_ACME: true               ##### letsencrypt setting
+      ENABLE_HSTS: ${_DEV_ENABLE_HSTS:-false}
+      ENABLE_ACME: ${_DEV_ENABLE_ACME:-false}               ##### letsencrypt setting
     volumes:
       #### code
       - code:/var/www
       #### certs
-      - ./keys/acme/:/acmecerts               #acme.sh install folder
-      - ./keys/certs/:/etc/apache2/certs      #certs folder
+      - ${_DEV_CERTS_FOLDER:-./keys}/acme/:/acmecerts               #acme.sh install folder
+      - ${_DEV_CERTS_FOLDER:-./keys}/certs/:/etc/apache2/certs      #certs folder
       #### apache setting
       - ./setting/php-apache-dev/www.conf:/etc/apache2/sites-available/www.conf:ro
       - ./setting/php-apache-dev/ssl.conf:/etc/apache2/sites-available/ssl.conf:ro
@@ -45,11 +45,9 @@ services:
       #### pre-script before service start, setting certs
       - ./setting/php-apache-dev/app/:/app
       #### CRM buildConfig setting
-      - ./secrets/BuildConfig.json:/var/BuildConfig.json    ##### need modify  #####
+      - ${_DEV_CRM_BUILD_CONFIG:-./secrets/BuildConfig.json}:/var/BuildConfig.json
       #### php log file
-      - ./log/php-dev/:/usr/local/var/log     #debug use.
-      #### others
- #      - ./setting/nginx/dns_dynu.sh:/acme.sh/dnsapi/dns_dynu.sh   # fix dynu.sh issue
+      - ${_DEV_LOG_FOLDER:-./log}/php-dev/:/usr/local/var/log     #debug use.
     ports:
       - "80:80"
       - "443:443"
@@ -57,11 +55,11 @@ services:
       default:
         #### setting for services call web server by host name
         aliases:
-          - dev.localtest.me
+          - ${_DEV_VIRTUAL_HOST:-dev.localtest.me}
     secrets:
       - crm_secrets
       - ssl
-#      - dns_api
+      - dns_api
 
   #### unison used for sync code to windows host
   unison:
@@ -84,16 +82,23 @@ services:
       - "5000:5000"
     restart: on-failure
 
+  #### selenium used for web access
+  selenium:
+    container_name: selenium
+    image: selenium/standalone-chrome
+    volumes:
+      - /dev/shm:/dev/shm
+
 secrets:
   #### database secret setting
   crm_secrets:
-    file: ./secrets/crm_sql_secrets.json
+    file: ${_DEV_CRM_SRCRETS:-./secrets/crm_sql_secrets.json}
   #### for DNS server auto api setting.
-#  dns_api:
-#    file: ./secrets/dns_api.json           ##### need modify  #####
+  dns_api:
+    file: ${_DEV_DNS_API_SRCRETS:-./secrets/dns_api.json}
   #### cert setting.
   ssl:
-    file: ./secrets/ssl-dev.json            ##### need modify  #####
+    file: ${_DEV_SSL_SRCRETS:-./secrets/ssl-dev.json}
 
 volumes:
   #### database data volume
