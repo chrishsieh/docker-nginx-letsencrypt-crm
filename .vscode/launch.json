@@ -5,13 +5,27 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Listen for XDebug",
+			"type": "chrome",
+			"request": "launch",
+			"name": "Launch Chrome",
+			"url": "https://dev.localtest.me",
+			"webRoot": "${workspaceFolder}/../CRM_sync/CRM/src"
+		},
+		{
 			"type": "php",
 			"request": "launch",
+			"name": "Listen for XDebug",
 			"port": 9000,
 			"pathMappings": {
-				"/var/www/CRM/": "${workspaceFolder}/content/",
+				"/var/www/CRM/": "${workspaceFolder}/../CRM_sync/CRM/src",
 			}
+		},
+		{
+			"type": "chrome",
+			"request": "attach",
+			"name": "Attach to Chrome",
+			"port": 9222,
+			"webRoot": "${workspaceFolder}/../CRM_sync/CRM/src"
 		}
 	]
 }
