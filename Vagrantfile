@@ -6,7 +6,7 @@
 ## Vagrant version
 Vagrant.require_version ">= 1.7.4"
 
-$forwarded_ports = { 80 => 80, 443 => 443, 5000 => 5000, 1080 => 1080, 8080 => 8080, 3306 => 3306 }
+$forwarded_ports = { 80 => 80, 443 => 443, 5000 => 5000, 1080 => 1080, 8080 => 8080, 3306 => 3306, 5900 => 5900 }
 
 # Make sure the vagrant-ignition plugin is installed
 #required_plugins = %w{ vagrant-winnfsd }
@@ -114,7 +114,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :shell, :inline => latest_docker_install_script
   config.vm.provision :shell, :inline => ssh_path_init
-  config.vm.provision :shell, :inline => fix_dns_use_ipv6
+  config.vm.provision :shell, :inline => fix_dns_use_ipv6, run: "always"
   config.vm.provision :shell, :inline => max_inotify
   config.vm.provision :shell, :inline => set_environment_variables, run: "always"
   config.vm.provision :shell, :inline => run_docker_compose, run: "always"

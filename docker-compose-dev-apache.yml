@@ -93,9 +93,14 @@ services:
   #### selenium used for web access
   selenium:
     container_name: selenium
-    image: selenium/standalone-chrome
-    volumes:
-      - /dev/shm:/dev/shm
+    image: selenium/standalone-chrome-debug
+    shm_size: 2g
+    environment:
+      - VNC_NO_PASSWORD=1
+    ports:
+      - "5900:5900"
+#    volumes:
+#      - /dev/shm:/dev/shm
 
   phpmyadmin:
     container_name: phpmyadmin
