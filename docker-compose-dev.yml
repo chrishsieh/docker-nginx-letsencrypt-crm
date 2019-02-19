@@ -41,6 +41,8 @@ services:
       - db-dev-volume:/var/lib/mysql
       #### pre-script before service start, init CRM database
       - ./setting/sql/sql_setup:/usr/local/prechk
+    ports:
+      - "3306:3306"
     secrets:
       #### database secret setting
       - crm_secrets
@@ -93,8 +95,6 @@ services:
     container_name: unison
     #### version need same as windows unison version.
     image: eugenmayer/unison:2.51.2.1
-    depends_on:
-      - php
     command: "/entrypoint.sh supervisord"
     environment:
       APP_VOLUME: "/unison"
@@ -109,6 +109,7 @@ services:
       - code:/unison
     ports:
       - "5000:5000"
+    restart: on-failure
 
   #### selenium used for web access
   selenium:
@@ -116,6 +117,14 @@ services:
     image: selenium/standalone-chrome
     volumes:
       - /dev/shm:/dev/shm
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db
+    ports:
+      - "8080:80"
 
 secrets:
   #### database secret setting

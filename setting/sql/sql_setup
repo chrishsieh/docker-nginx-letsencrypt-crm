@@ -22,6 +22,7 @@ if [ $MYSQL_ROOT_PWD = "changeme" ]; then
     ${reset}
     echo ""
 fi
+
 if [ $MYSQL_USER_PWD = "changeme" ]; then
     figlet -f colossal "WARNING"
     red=$(tput setaf 1)    # Red
@@ -34,16 +35,16 @@ if [ $MYSQL_USER_PWD = "changeme" ]; then
     ${reset}
 fi
 
-if [ -s $MYSQL_DATADIR/mysqld-up ]; then
-        echo "[i] MySQL directory already present, skipping creation"
+if [ -f $MYSQL_DATADIR/mysqld-up ]; then
+    echo "[i] MySQL directory already present, skipping creation"
 else
     echo "[i] mysqld not found, creating...."
     mkdir -p /run/mysqld
     chown -R mysql:mysql /run/mysqld
     echo 'Initializing database'
-        mkdir -p "$MYSQL_DATADIR/mysql"
-        chown -R mysql:mysql $MYSQL_DATADIR
-	mysql_install_db --user=mysql --datadir="$MYSQL_DATADIR" --rpm
+    mkdir -p "$MYSQL_DATADIR/mysql"
+    chown -R mysql:mysql $MYSQL_DATADIR
+    mysql_install_db --user=mysql --datadir="$MYSQL_DATADIR" --rpm
     echo 'Database initialized'
 
     tfile=`mktemp`
@@ -67,14 +68,14 @@ EOF
         echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_USER_DB\` CHARACTER SET utf8 COLLATE utf8_general_ci;" >> $tfile
 
         if [ "$MYSQL_USER" != "" ]; then
-        #echo "[i] Creating user: $MYSQL_USER with password $MYSQL_USER_PWD"
-        echo "GRANT ALL PRIVILEGES ON \`$MYSQL_USER_DB\`.* to '$MYSQL_USER'@'%' identified by '${MYSQL_USER_PWD}' ;" >> $tfile
-        echo "GRANT ALL PRIVILEGES ON \`$MYSQL_USER_DB\`.* to '$MYSQL_USER'@'localhost' identified by '${MYSQL_USER_PWD}' ;" >> $tfile
-        echo "FLUSH PRIVILEGES ;" >> $tfile
+            #echo "[i] Creating user: $MYSQL_USER with password $MYSQL_USER_PWD"
+            echo "GRANT ALL PRIVILEGES ON \`$MYSQL_USER_DB\`.* to '$MYSQL_USER'@'%' identified by '${MYSQL_USER_PWD}' ;" >> $tfile
+            echo "GRANT ALL PRIVILEGES ON \`$MYSQL_USER_DB\`.* to '$MYSQL_USER'@'localhost' identified by '${MYSQL_USER_PWD}' ;" >> $tfile
+            echo "FLUSH PRIVILEGES ;" >> $tfile
         fi
     fi
 
     /usr/bin/mysqld --user=mysql --bootstrap --verbose=1 --datadir="$MYSQL_DATADIR" < $tfile
     rm -f "$tfile"
-    echo "">$MYSQL_DATADIR/mysqld-up
+    touch $MYSQL_DATADIR/mysqld-up
 fi

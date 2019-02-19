@@ -9,6 +9,8 @@ services:
       - db-dev-volume:/var/lib/mysql
       #### pre-script before service start, init CRM database
       - ./setting/sql/sql_setup:/usr/local/prechk
+    ports:
+      - "3306:3306"
     secrets:
       #### database secret setting
       - crm_secrets
@@ -94,6 +96,14 @@ services:
     image: selenium/standalone-chrome
     volumes:
       - /dev/shm:/dev/shm
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db
+    ports:
+      - "8080:80"
 
 secrets:
   #### database secret setting
