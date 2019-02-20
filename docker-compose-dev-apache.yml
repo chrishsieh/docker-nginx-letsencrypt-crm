@@ -94,15 +94,16 @@ services:
   selenium:
     container_name: selenium
     image: selenium/standalone-chrome-debug
-#    shm_size: 2g
+    shm_size: 2g
     environment:
       - VNC_NO_PASSWORD=1
-      - SCREEN_WIDTH=1920
-      - SCREEN_HEIGHT=1080
+#      - SCREEN_WIDTH=1920
+#      - SCREEN_HEIGHT=1080
+      - JAVA_OPTS=-Xmx512m
     ports:
       - "5900:5900"
-    volumes:
-      - /dev/shm:/dev/shm
+#    volumes:
+#      - /dev/shm:/dev/shm
 
   phpmyadmin:
     container_name: phpmyadmin
