@@ -32,7 +32,7 @@ EOF
 SCRIPT
 
 latest_docker_install_script = <<SCRIPT
-  DOCKER_VERSION=18.06.1-ce
+  DOCKER_VERSION=18.09.2
   DOCKER_COMPOSE_VERSION=1.23.2
 
   docker version

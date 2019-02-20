@@ -11,7 +11,7 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - dhparam-volume:/etc/nginx/dhparam/
+      - dhparam-dev-volume:/etc/nginx/dhparam/
       - ./setting/nginx/vhost.d/:/etc/nginx/vhost.d:ro
       - ./setting/nginx/stream.d/:/etc/nginx/stream.d
       - ./setting/nginx/proxy.conf:/etc/nginx/proxy.conf:ro
@@ -115,13 +115,15 @@ services:
   selenium:
     container_name: selenium
     image: selenium/standalone-chrome-debug
-    shm_size: 2g
+#    shm_size: 2g
     environment:
       - VNC_NO_PASSWORD=1
+      - SCREEN_WIDTH=1920
+      - SCREEN_HEIGHT=1080
     ports:
       - "5900:5900"
-#    volumes:
-#      - /dev/shm:/dev/shm
+    volumes:
+      - /dev/shm:/dev/shm
 
   phpmyadmin:
     container_name: phpmyadmin
