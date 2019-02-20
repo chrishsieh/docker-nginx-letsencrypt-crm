@@ -1,9 +1,9 @@
 #!/bin/sh
 
-source /etc/os-release
+. /etc/os-release
 
 echo "alias ls='ls --color=auto'" >> ~/.bashrc
-source ~/.bashrc || true
+. ~/.bashrc || true
 rm -f /var/www/sync.done || true
 
 if ! [ -d /var/www/CRM/ ]; then
