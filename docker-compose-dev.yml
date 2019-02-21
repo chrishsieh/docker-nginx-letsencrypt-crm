@@ -22,6 +22,8 @@ services:
 #      - ./setting/nginx/updatessl-debug.sh:/app/prechk    #debug use.
 #      - ./setting/nginx/Procfile-debug:/app/Procfile:ro   #debug nginx mode.
       - ${_DEV_LOG_FOLDER:-./log}/nginx/:/var/log/nginx/                      #log
+      #### code
+      - code:/var/www
     restart: always
     secrets:
       - dns_api
@@ -81,6 +83,9 @@ services:
       - ${_DEV_CRM_BUILD_CONFIG:-./secrets/BuildConfig.json}:/var/BuildConfig.json
       #### php log file
       - ${_DEV_LOG_FOLDER:-./log}/php-dev:/usr/local/var/log    #### debug use.
+      - ./setting/null.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    cap_add:
+      - SYS_PTRACE
     secrets:
       - crm_secrets
 
@@ -115,16 +120,16 @@ services:
   selenium:
     container_name: selenium
     image: selenium/standalone-chrome-debug
-    shm_size: 2g
+#    shm_size: 2g
     environment:
       - VNC_NO_PASSWORD=1
-      - SCREEN_WIDTH=1920
-      - SCREEN_HEIGHT=1080
-      - JAVA_OPTS=-Xmx512m
+#      - SCREEN_WIDTH=1920
+#      - SCREEN_HEIGHT=1080
+      - JAVA_OPTS=-Xmx1024m
     ports:
       - "5900:5900"
-#    volumes:
-#      - /dev/shm:/dev/shm
+    volumes:
+      - /dev/shm:/dev/shm
 
   phpmyadmin:
     container_name: phpmyadmin
