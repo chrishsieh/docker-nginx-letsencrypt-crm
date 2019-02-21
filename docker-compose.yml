@@ -4,7 +4,7 @@ services:
     container_name: web
     image: chrishsieh/nginx-proxy:latest
     environment:
-      - DEFAULT_HOST=${_DEFAULT_HOST:-myapp.localtest.me}
+      - DEFAULT_HOST=${DEFAULT_HOST:-myapp.localtest.me}
     ports:
       - "80:80"
       - "443:443"
@@ -15,10 +15,10 @@ services:
       - ./setting/nginx/stream.d/:/etc/nginx/stream.d
       - ./setting/nginx/proxy.conf:/etc/nginx/proxy.conf:ro
       - ./setting/nginx/nginx.tmpl:/app/nginx.tmpl:ro
-      - ${_CERTS_FOLDER:-./keys}/acme:/acmecerts                #acme.sh install folder
-      - ${_CERTS_FOLDER:-./keys}/certs:/etc/nginx/certs         #certs folder
+      - ${CERTS_FOLDER:-./keys}/acme:/acmecerts                #acme.sh install folder
+      - ${CERTS_FOLDER:-./keys}/certs:/etc/nginx/certs         #certs folder
       - ./setting/nginx/updatessl.sh:/app/prechk
-      - ${_LOG_FOLDER:-./log}/nginx:/var/log/nginx              #log
+      - ${LOG_FOLDER:-./log}/nginx:/var/log/nginx              #log
     restart: always
     secrets:
       - dns_api
@@ -27,7 +27,7 @@ services:
       default:
         #### setting for services call web server by host name
         aliases:
-          - ${_VIRTUAL_HOST:-myapp.localtest.me}
+          - ${VIRTUAL_HOST:-myapp.localtest.me}
 
   db:
     container_name: db
@@ -45,30 +45,30 @@ services:
       - db
     environment:
       - MYSQL_DB_HOST=db
-      - LC_ALL=${_ALPINE_LC_ALL:-en_US}
+      - LC_ALL=${ALPINE_LC_ALL:-en_US}
       ##### RELEASE_VERSION avaiable value: latest, 3.1.0
-      - RELEASE_VERSION=${_CRM_VERSION:-latest}
-      - VIRTUAL_HOST=${_VIRTUAL_HOST:-myapp.localtest.me}
+      - RELEASE_VERSION=${CRM_VERSION:-latest}
+      - VIRTUAL_HOST=${VIRTUAL_HOST:-myapp.localtest.me}
       - VIRTUAL_PROTO=fastcgi
       - VIRTUAL_ROOT=/var/www/CRM/churchcrm
       - VIRTUAL_PORT=9000
-      - ENABLE_ACME=${_ENABLE_ACME:-false}                  ##### letsencrypt setting
-      - ENABLE_HSTS=${_ENABLE_HSTS:-false}
+      - ENABLE_ACME=${ENABLE_ACME:-false}                  ##### letsencrypt setting
+      - ENABLE_HSTS=${ENABLE_HSTS:-false}
     volumes:
-      - ${_CRM_SOURCE_FOLDER:-./content}/:/var/www/CRM/churchcrm                   ##### php code
+      - ${CRM_SOURCE_FOLDER:-./content}/:/var/www/CRM/churchcrm                   ##### php code
       - ./setting/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/php/crmsetup:/usr/local/prechk
-      - ${_LOG_FOLDER:-./log}/php:/usr/local/var/log        #### log
+      - ${LOG_FOLDER:-./log}/php:/usr/local/var/log        #### log
     secrets:
       - crm_secrets
 
 secrets:
   crm_secrets:
-    file: ${_CRM_SRCRETS:-./secrets/crm_sql_secrets.json}
+    file: ${CRM_SRCRETS:-./secrets/crm_sql_secrets.json}
   dns_api:
-    file: ${_DNS_API_SRCRETS:-./secrets/dns_api.json}
+    file: ${DNS_API_SRCRETS:-./secrets/dns_api.json}
   ssl:
-    file: ${_SSL_SRCRETS:-./secrets/ssl.json}
+    file: ${SSL_SRCRETS:-./secrets/ssl.json}
 
 volumes:
   db-volume: null

@@ -23,18 +23,18 @@ services:
       - db
     environment:
       ##### do git ${_GIT_CMD} #####
-      GIT_CMD: ${_DEV_GIT_CMD:-master}
+      GIT_CMD: ${DEV_GIT_CMD:-master}
       MYSQL_DB_HOST: db
-      VIRTUAL_HOST: ${_DEV_VIRTUAL_HOST:-dev.localtest.me}   ##### need modify  #####
+      VIRTUAL_HOST: ${DEV_VIRTUAL_HOST:-dev.localtest.me}   ##### need modify  #####
       VIRTUAL_ROOT: /var/www/CRM/src
-      ENABLE_HSTS: ${_DEV_ENABLE_HSTS:-false}
-      ENABLE_ACME: ${_DEV_ENABLE_ACME:-false}               ##### letsencrypt setting
+      ENABLE_HSTS: ${DEV_ENABLE_HSTS:-false}
+      ENABLE_ACME: ${DEV_ENABLE_ACME:-false}               ##### letsencrypt setting
     volumes:
       #### code
       - code:/var/www
       #### certs
-      - ${_DEV_CERTS_FOLDER:-./keys}/acme/:/acmecerts               #acme.sh install folder
-      - ${_DEV_CERTS_FOLDER:-./keys}/certs/:/etc/apache2/certs      #certs folder
+      - ${DEV_CERTS_FOLDER:-./keys}/acme/:/acmecerts               #acme.sh install folder
+      - ${DEV_CERTS_FOLDER:-./keys}/certs/:/etc/apache2/certs      #certs folder
       #### apache setting
       - ./setting/php-apache-dev/www.conf:/etc/apache2/sites-available/www.conf:ro
       - ./setting/php-apache-dev/ssl.conf:/etc/apache2/sites-available/ssl.conf:ro
@@ -47,9 +47,9 @@ services:
       #### pre-script before service start, setting certs
       - ./setting/php-apache-dev/app/:/app
       #### CRM buildConfig setting
-      - ${_DEV_CRM_BUILD_CONFIG:-./secrets/BuildConfig.json}:/var/BuildConfig.json
+      - ${DEV_CRM_BUILD_CONFIG:-./secrets/BuildConfig.json}:/var/BuildConfig.json
       #### php log file
-      - ${_DEV_LOG_FOLDER:-./log}/php-dev/:/usr/local/var/log     #debug use.
+      - ${DEV_LOG_FOLDER:-./log}/php-dev/:/usr/local/var/log     #debug use.
     ports:
       - "80:80"
       - "443:443"
@@ -57,7 +57,7 @@ services:
       default:
         #### setting for services call web server by host name
         aliases:
-          - ${_DEV_VIRTUAL_HOST:-dev.localtest.me}
+          - ${DEV_VIRTUAL_HOST:-dev.localtest.me}
     secrets:
       - crm_secrets
       - ssl
@@ -94,7 +94,7 @@ services:
   selenium:
     container_name: selenium
     image: selenium/standalone-chrome-debug
-    shm_size: 2g
+#    shm_size: 2g
     environment:
       - VNC_NO_PASSWORD=1
 #      - SCREEN_WIDTH=1920
@@ -102,8 +102,8 @@ services:
       - JAVA_OPTS=-Xmx512m
     ports:
       - "5900:5900"
-#    volumes:
-#      - /dev/shm:/dev/shm
+    volumes:
+      - /dev/shm:/dev/shm
 
   phpmyadmin:
     container_name: phpmyadmin
@@ -116,13 +116,13 @@ services:
 secrets:
   #### database secret setting
   crm_secrets:
-    file: ${_DEV_CRM_SRCRETS:-./secrets/crm_sql_secrets.json}
+    file: ${DEV_CRM_SRCRETS:-./secrets/crm_sql_secrets.json}
   #### for DNS server auto api setting.
   dns_api:
-    file: ${_DEV_DNS_API_SRCRETS:-./secrets/dns_api.json}
+    file: ${DEV_DNS_API_SRCRETS:-./secrets/dns_api.json}
   #### cert setting.
   ssl:
-    file: ${_DEV_SSL_SRCRETS:-./secrets/ssl-dev.json}
+    file: ${DEV_SSL_SRCRETS:-./secrets/ssl-dev.json}
 
 volumes:
   #### database data volume

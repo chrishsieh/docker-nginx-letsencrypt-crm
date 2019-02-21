@@ -27,4 +27,4 @@ if (! ( Test-Path "$PSScriptRoot\..\CRM_sync" -ne 1 ) ) {
 }
 
 Remove-Item "$PSScriptRoot\sync.log"
-.\unison.exe ../CRM_sync socket://127.0.0.1:5000/ -perms=0 -auto -numericids -batch -maxerrors 10 -repeat watch -silent -logfile sync.log
+.\unison.exe ../CRM_sync socket://127.0.0.1:5000/ -perms=0 -auto -numericids -batch -maxerrors 10 -repeat watch -silent -ignore="Name {*.log}" -logfile sync.log
