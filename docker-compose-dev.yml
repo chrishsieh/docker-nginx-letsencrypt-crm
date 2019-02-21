@@ -70,6 +70,7 @@ services:
       ENABLE_HSTS: ${DEV_ENABLE_HSTS:-false}
       ENABLE_ACME: ${DEV_ENABLE_ACME:-false}                ##### letsencrypt setting
       EN_XDEBUG: ${DEV_EN_XDEBUG:-true}
+      INCLUDE_DEMO_DATA: ${DEV_INCLUDE_DEMO_DATA:-=true}
     volumes:
       #### code
       - code:/var/www
@@ -84,7 +85,7 @@ services:
       - ${DEV_CRM_BUILD_CONFIG:-./secrets/BuildConfig.json}:/var/BuildConfig.json
       #### php log file
       - ${DEV_LOG_FOLDER:-./log}/php-dev/:/usr/local/var/log    #### debug use.
-      - ${DEV_LOG_FOLDER:-./log}/crm/:/var/www/logs
+      - ${DEV_LOG_FOLDER:-./log}/crm/:/var/log/crm
     cap_add:
       #### for php slow trace
       - SYS_PTRACE
