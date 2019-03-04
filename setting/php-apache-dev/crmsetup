@@ -1,62 +1,14 @@
 #!/bin/bash
-
-cp /etc/apache2/sites-available/www.conf /etc/apache2/sites-available/ChurchCRM.conf
-cp /etc/apache2/sites-available/ssl.conf /etc/apache2/sites-available/ChurchCRM-ssl.conf
-sed -i "s/#ServerName www.example.com/ServerName ${VIRTUAL_HOST}/g" /etc/apache2/sites-available/ChurchCRM.conf
-sed -i "s\DocumentRoot /var/www/html\DocumentRoot ${VIRTUAL_ROOT}\g" /etc/apache2/sites-available/ChurchCRM.conf
-sed -i "s\DocumentRoot /var/www/html\DocumentRoot ${VIRTUAL_ROOT}\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
-sed -i "s\SSLCertificateFile	/etc/ssl/certs/ssl-cert-snakeoil.pem\SSLCertificateFile	/etc/apache2/certs/${VIRTUAL_HOST}.crt.pem\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
-sed -i "s\SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key\SSLCertificateKeyFile /etc/apache2/certs/${VIRTUAL_HOST}.key.pem\g" /etc/apache2/sites-available/ChurchCRM-ssl.conf
-/app/updatessl.sh updatessl
-a2ensite ChurchCRM.conf
-a2enmod ssl
-a2ensite ChurchCRM-ssl.conf
-a2enmod rewrite
-
-echo "alias ls='ls --color=auto'" >> ~/.bashrc
-source ~/.bashrc
-rm -f /var/www/sync.done || true
-
-if ! [ -d /var/www/CRM/ ]; then
-    git clone https://github.com/ChurchCRM/CRM.git CRM
-    chown -R www-data:www-data /var/www/CRM
-fi
-
-cp /var/BuildConfig.json /var/www/CRM/BuildConfig.json
-chown www-data:www-data /var/www/CRM/BuildConfig.json
-
-if ! [ -f /var/www/CRM/fetch.done ]; then
-    cd CRM
-    git fetch --all
-    if ! [ -z "${GIT_CMD}" ]; then
-        echo "git ${GIT_CMD}";
-        git $GIT_CMD;
-    fi
-    chmod +x ./travis-ci/*.sh
-    chmod +x ./scripts/*.sh
-
-    rm package-lock.json
-    yarn add grunt-cli i18next-extract-gettext github-release-notes webpack webpack-cli typescript ts-loader -D
-    yarn install
-    yarn run composer-update
-    yarn run composer-install
-    yarn run orm-gen
-    yarn run update-signatures
-fi
-
-chown -R www-data:www-data /var/www/CRM
-touch /var/www/CRM/fetch.done
-
-if ! [ -f /var/www/CRM/src/Include/Config.php ]; then
+set_config_php() {
     cp /var/www/CRM/src/Include/Config.php.example /var/www/CRM/src/Include/Config.php
     chown www-data:www-data /var/www/CRM/src/Include/Config.php
-    chmod 777 /var/www/CRM/src/Include/Config.php
 
     # Import Docker Secrets
-    MYSQL_USER=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER')
-    MYSQL_USER_PWD=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_PWD')
-    MYSQL_USER_DB=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_DB')
-    if [ $MYSQL_USER_PWD = "changeme" ]; then
+    local MYSQL_USER=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER')
+    local MYSQL_USER_PWD=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_PWD')
+    local MYSQL_USER_DB=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_DB')
+
+    if [ "$MYSQL_USER_PWD" = "changeme" ]; then
         figlet -f colossal "WARNING"
         red=$(tput setaf 1) # Red
         reset=$(tput sgr0)
@@ -76,6 +28,115 @@ if ! [ -f /var/www/CRM/src/Include/Config.php ]; then
     sed -i "s/||DB_PASSWORD||/$MYSQL_USER_PWD/g" /var/www/CRM/src/Include/Config.php
     sed -i "s/||URL||//g" /var/www/CRM/src/Include/Config.php
     sed -i "s/||ROOT_PATH||//g" /var/www/CRM/src/Include/Config.php
+}
+
+set_demo_config_php() {
+    # Import Docker Secrets
+    local MYSQL_USER=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER')
+    local MYSQL_USER_PWD=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_PWD')
+    local MYSQL_USER_DB=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_DB')
+    local MYSQL_ROOT_PWD=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_ROOT_PWD')
+
+    sed -i "s/sSERVERNAME = \(.*\);/sSERVERNAME = '$MYSQL_DB_HOST';/g" /var/www/CRM/travis-ci/Config.php
+    sed -i "s/sUSER = \(.*\);/sUSER = '$MYSQL_USER';/g" /var/www/CRM/travis-ci/Config.php
+    sed -i "s/sPASSWORD = \(.*\);/sPASSWORD = '$MYSQL_USER_PWD';/g" /var/www/CRM/travis-ci/Config.php
+    sed -i "s/sRootPath = \(.*\);/sRootPath = '';/g" /var/www/CRM/travis-ci/Config.php
+    sed -i "s|'http://\(.*\)/';|'http://$VIRTUAL_HOST/';|g" /var/www/CRM/travis-ci/Config.php
+
+    sed -i "s/sSERVERNAME = \(.*\);/sSERVERNAME = '$MYSQL_DB_HOST';/g" /var/www/CRM/tests/bootstrap.php
+    sed -i "s/sRootPath = \(.*\);/sRootPath = '';/g" /var/www/CRM/tests/bootstrap.php
+
+    sed -i "s|vagrant|var/www/CRM|g" /var/www/CRM/scripts/tests-run.sh
+    sed -i 's|{"goutte" : "~","selenium2":"~"}|{"selenium2" : { "wd_host": "http://selenium:4444/wd/hub"}}|g' /var/www/CRM/scripts/tests-run.sh
+
+    sed -i "s|http://\(.*\)|http://$VIRTUAL_HOST|g" /var/www/CRM/tests/behat/behat.yml
+    sed -i "s|Chrome|chrome|g" /var/www/CRM/tests/behat/behat.yml
+    sed -i "s|platform: Windows 10|browser: chrome|g" /var/www/CRM/tests/behat/behat.yml
+
+    echo "Database: mysql started"
+
+    mysql -uroot -p"$MYSQL_ROOT_PWD" -h"$MYSQL_DB_HOST" -e "DROP DATABASE IF EXISTS churchcrm_test;"
+    mysql -uroot -p"$MYSQL_ROOT_PWD" -h"$MYSQL_DB_HOST" -e "DROP USER '$MYSQL_USER';"
+    echo "Database: cleared"
+
+    mysql -uroot -p"$MYSQL_ROOT_PWD" -h"$MYSQL_DB_HOST" -e "CREATE DATABASE churchcrm_test CHARACTER SET utf8;"
+    echo "Database: created"
+
+    mysql -uroot -p"$MYSQL_ROOT_PWD" -h"$MYSQL_DB_HOST" -e "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_USER_PWD';"
+    mysql -uroot -p"$MYSQL_ROOT_PWD" -h"$MYSQL_DB_HOST" -e "GRANT ALL PRIVILEGES ON churchcrm_test.* TO '$MYSQL_USER'@'%' WITH GRANT OPTION;"
+    mysql -uroot -p"$MYSQL_ROOT_PWD" -h"$MYSQL_DB_HOST" -e "FLUSH PRIVILEGES;"
+    echo "Database: user created with needed PRIVILEGES"
+
+    echo "=========================================================="
+    echo "===============   db script import       ================="
+    echo "=========================================================="
+    mysql churchcrm_test < /var/www/CRM/src/mysql/install/Install.sql -uroot -p"$MYSQL_ROOT_PWD" -h"$MYSQL_DB_HOST";
+    mysql churchcrm_test < /var/www/CRM/src/mysql/upgrade/update_config.sql -uroot -p"$MYSQL_ROOT_PWD" -h"$MYSQL_DB_HOST";
+    echo "===============   db demo script import  ================"
+    mysql churchcrm_test < /var/www/CRM/demo/ChurchCRM-Database.sql -uroot -p"$MYSQL_ROOT_PWD" -h"$MYSQL_DB_HOST";
+    echo "===============   db script import  Done  ================"
+    cp /var/www/CRM/travis-ci/Config.php /var/www/CRM/src/Include/Config.php
+}
+
+set -x
+/app/updatessl.sh updatessl
+
+echo "alias ls='ls --color=auto'" >> ~/.bashrc
+source ~/.bashrc
+rm -f /var/www/sync.done || true
+
+if ! [ -d /var/www/CRM/ ]; then
+    git clone https://github.com/ChurchCRM/CRM.git CRM
+    chown -R www-data:www-data /var/www/CRM
 fi
+
+cp /var/BuildConfig.json /var/www/CRM/BuildConfig.json
+chown www-data:www-data /var/www/CRM/BuildConfig.json
+rm -rf /var/www/CRM/src/logs
+ln -s /var/log/crm/ /var/www/CRM/src/logs
+cp /var/www/CRM/src/.htaccess /var/www/CRM/src/logs
+
+if ! [ -f /var/www/CRM/fetch.done ]; then
+    cd CRM
+    git fetch --all
+    if ! [ -z "${GIT_CMD}" ]; then
+        echo "git ${GIT_CMD}";
+        git $GIT_CMD;
+    fi
+    chmod +x ./travis-ci/*.sh
+    chmod +x ./scripts/*.sh
+
+    npm install --unsafe-perm grunt-cli i18next-extract-gettext github-release-notes detect-libc lightercollective webpack webpack-cli typescript ts-loader --save-dev
+    npm install --unsafe-perm
+    npm audit fix
+    npm run composer-update
+    npm run composer-install
+    npm run orm-gen
+    npm run update-signatures
+    if [ "$INCLUDE_DEMO_DATA" = "true" ]; then
+        npm run tests-install
+    fi
+fi
+
+chown -R www-data:www-data /var/www/CRM
+touch /var/www/CRM/fetch.done
+
+if [ "$INCLUDE_DEMO_DATA" = "true" ]; then
+    echo "Set Demo Config.php"
+    set +x
+    set_demo_config_php;
+    set -x
+else
+    if ! [ -f /var/www/CRM/src/Include/Config.php ]; then
+        echo "Set Config.php"
+        set +x
+        set_config_php;
+        set -x
+    fi
+fi
+
+cd /var/www/CRM/src
+find . -type d -exec chmod -R 755 {} \;
+find . -type f -exec chmod -R 644 {} \;
 
 touch /var/www/sync.done
