@@ -79,6 +79,9 @@ set_demo_config_php() {
 }
 
 set -x
+if [ "$EN_XDEBUG" = "false" ]; then
+    rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+fi
 /app/updatessl.sh updatessl
 
 echo "alias ls='ls --color=auto'" >> ~/.bashrc
@@ -112,6 +115,7 @@ if ! [ -f /var/www/CRM/fetch.done ]; then
     npm run composer-update
     npm run composer-install
     npm run orm-gen
+    npm run build-react
     npm run update-signatures
     if [ "$INCLUDE_DEMO_DATA" = "true" ]; then
         npm run tests-install

@@ -29,6 +29,8 @@ services:
       VIRTUAL_ROOT: /var/www/CRM/src
       ENABLE_HSTS: ${DEV_ENABLE_HSTS:-false}
       ENABLE_ACME: ${DEV_ENABLE_ACME:-false}               ##### letsencrypt setting
+      EN_XDEBUG: ${DEV_EN_XDEBUG:-true}
+      INCLUDE_DEMO_DATA: ${DEV_INCLUDE_DEMO_DATA:-=true}
     volumes:
       #### code
       - code:/var/www
@@ -49,7 +51,8 @@ services:
       #### CRM buildConfig setting
       - ${DEV_CRM_BUILD_CONFIG:-./secrets/BuildConfig.json}:/var/BuildConfig.json
       #### php log file
-      - ${DEV_LOG_FOLDER:-./log}/php-dev/:/usr/local/var/log     #debug use.
+      - ${DEV_LOG_FOLDER:-./log}/php-dev/:/usr/local/var/log    #### debug use.
+      - ${DEV_LOG_FOLDER:-./log}/crm/:/var/log/crm
     ports:
       - "80:80"
       - "443:443"
@@ -70,25 +73,25 @@ services:
       - "1080:1080"
 
   #### unison used for sync code to windows host
-  unison:
-    container_name: unison
-    #### version need same as windows unison version.
-    image: eugenmayer/unison:2.51.2.1
-    command: "/entrypoint.sh supervisord"
-    environment:
-      APP_VOLUME: "/unison"
-      UNISON_ARGS: "-socket 5000"
-      OWNER_UID: 33
-      UNISON_WATCH_ARGS: ""
-      UNISON_SRC: ""
-      UNISON_DEST: ""
-      HOST_VOLUME: ""
-      MONIT_ENABLE: "false"
-    volumes:
-      - code:/unison
-    ports:
-      - "5000:5000"
-    restart: on-failure
+#  unison:
+#    container_name: unison
+#    #### version need same as windows unison version.
+#    image: eugenmayer/unison:2.51.2.1
+#    command: "/entrypoint.sh supervisord"
+#    environment:
+#      APP_VOLUME: "/unison"
+#      UNISON_ARGS: "-socket 5000"
+#      OWNER_UID: 33
+#      UNISON_WATCH_ARGS: ""
+#      UNISON_SRC: ""
+#      UNISON_DEST: ""
+#      HOST_VOLUME: ""
+#      MONIT_ENABLE: "false"
+#    volumes:
+#      - code:/unison
+#    ports:
+#      - "5000:5000"
+#    restart: on-failure
 
   #### selenium used for web access
   selenium:
@@ -99,7 +102,7 @@ services:
       - VNC_NO_PASSWORD=1
 #      - SCREEN_WIDTH=1920
 #      - SCREEN_HEIGHT=1080
-      - JAVA_OPTS=-Xmx512m
+#      - JAVA_OPTS=-Xmx512m
     ports:
       - "5900:5900"
     volumes:
