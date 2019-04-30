@@ -40,7 +40,7 @@ services:
 
   php:
     container_name: php
-    image: chrishsieh/php-fpm:latest
+    image: chrishsieh/php-fpm:alpine
     links:
       - db
     environment:
@@ -57,7 +57,7 @@ services:
     volumes:
       - ${_CRM_SOURCE_FOLDER:-./content}/:/var/www/CRM/churchcrm                   ##### php code
       - ./setting/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
-      - ./setting/php/crmsetup:/usr/local/prechk
+      - ./setting/php/crmsetup:/run.d/10-setup.sh
       - ${_LOG_FOLDER:-./log}/php:/usr/local/var/log        #### log
     secrets:
       - crm_secrets
