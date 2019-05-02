@@ -34,7 +34,7 @@ services:
     image: chrishsieh/mysql:latest
     volumes:
       - db-volume:/var/lib/mysql
-      - ./setting/sql/sql_setup:/usr/local/prechk
+      - ./setting/sql/pre-init/:/scripts/pre-init.d/
     secrets:
       - crm_secrets
 

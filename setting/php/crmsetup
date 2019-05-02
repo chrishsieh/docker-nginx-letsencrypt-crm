@@ -21,15 +21,15 @@ if ! [ -f ./CRM/churchcrm/Include/Config.php ]; then
 
     # Import Docker Secrets
     MYSQL_USER=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER')
-    MYSQL_USER_PWD=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_PWD')
-    MYSQL_USER_DB=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_DB')
+    MYSQL_PASSWORD=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_PASSWORD')
+    MYSQL_DATABASE=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_DATABASE')
 
-    if [ $MYSQL_USER_PWD = "changeme" ]; then
+    if [ $MYSQL_PASSWORD = "changeme" ]; then
         red=$(tput setaf 1)    # Red
         reset=$(tput sgr0)
         echo "${red}*********************************************"
         echo "${red}WARNING!!!"
-        echo "${red}YOU DID NOT CHANGE THE MYSQL_USER_PWD IN THE crm_secrets.json FILE!!!"
+        echo "${red}YOU DID NOT CHANGE THE MYSQL_PASSWORD IN THE crm_secrets.json FILE!!!"
         echo "${red}This is EXTREMELY insecure. Please go back and change the password to something more secure and re-build your images by running docker-compose build"
         echo "${red}*********************************************"
         echo "$(tput sgr0)"
@@ -39,9 +39,9 @@ if ! [ -f ./CRM/churchcrm/Include/Config.php ]; then
     # Create ChurchCRM Config File
     sed -i "s/||DB_SERVER_NAME||/$MYSQL_DB_HOST/g" /var/www/CRM/churchcrm/Include/Config.php
     sed -i "s/||DB_SERVER_PORT||/3306/g" /var/www/CRM/churchcrm/Include/Config.php
-    sed -i "s/||DB_NAME||/$MYSQL_USER_DB/g" /var/www/CRM/churchcrm/Include/Config.php
+    sed -i "s/||DB_NAME||/$MYSQL_DATABASE/g" /var/www/CRM/churchcrm/Include/Config.php
     sed -i "s/||DB_USER||/$MYSQL_USER/g" /var/www/CRM/churchcrm/Include/Config.php
-    sed -i "s/||DB_PASSWORD||/$MYSQL_USER_PWD/g" /var/www/CRM/churchcrm/Include/Config.php
+    sed -i "s/||DB_PASSWORD||/$MYSQL_PASSWORD/g" /var/www/CRM/churchcrm/Include/Config.php
     sed -i "s/||URL||//g" /var/www/CRM/churchcrm/Include/Config.php
     sed -i "s/||ROOT_PATH||//g" /var/www/CRM/churchcrm/Include/Config.php
 fi
