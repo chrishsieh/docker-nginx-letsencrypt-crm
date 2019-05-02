@@ -40,7 +40,7 @@ services:
 
   php:
     container_name: php
-    image: chrishsieh/php-fpm:alpine
+    image: chrishsieh/php-fpm:alpine-latest
     links:
       - db
     environment:
@@ -55,7 +55,8 @@ services:
       - ENABLE_ACME=${_ENABLE_ACME:-false}                  ##### letsencrypt setting
       - ENABLE_HSTS=${_ENABLE_HSTS:-false}
     volumes:
-      - ${_CRM_SOURCE_FOLDER:-./content}/:/var/www/CRM/churchcrm                   ##### php code
+      - default-volume:/var/www
+      - php-volume:/var/www/CRM/churchcrm                   ##### php code
       - ./setting/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./setting/php/crmsetup:/run.d/10-setup.sh
       - ${_LOG_FOLDER:-./log}/php:/usr/local/var/log        #### log
@@ -71,5 +72,7 @@ secrets:
     file: ${_SSL_SRCRETS:-./secrets/ssl.json}
 
 volumes:
-  db-volume: null
-  dhparam-volume: null
+  db-volume:
+  dhparam-volume:
+  default-volume:
+  php-volume:

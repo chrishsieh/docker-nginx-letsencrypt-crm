@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
 
 if ! [ -f ./CRM/churchcrm/index.php ]; then
     if [ "${RELEASE_VERSION}" == "latest" ]; then
@@ -23,16 +25,15 @@ if ! [ -f ./CRM/churchcrm/Include/Config.php ]; then
     MYSQL_USER_DB=$(cat /run/secrets/crm_secrets | jq -r '.mysql.MYSQL_USER_DB')
 
     if [ $MYSQL_USER_PWD = "changeme" ]; then
-        figlet -f colossal "WARNING"
         red=$(tput setaf 1)    # Red
         reset=$(tput sgr0)
         echo "${red}*********************************************"
         echo "${red}WARNING!!!"
         echo "${red}YOU DID NOT CHANGE THE MYSQL_USER_PWD IN THE crm_secrets.json FILE!!!"
-        echo "${red}This is EXTREMELY insecure. Please go back and change the password to something more secure and re-build your images by running `docker-compose build`"
+        echo "${red}This is EXTREMELY insecure. Please go back and change the password to something more secure and re-build your images by running docker-compose build"
         echo "${red}*********************************************"
-        ${reset}
-        echo ""
+        echo "$(tput sgr0)"
+        exit 1
     fi
 
     # Create ChurchCRM Config File
